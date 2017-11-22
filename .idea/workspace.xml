@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="558ac743-39b1-4d9c-ab46-81873a9bc231" name="Default" comment="" />
+    <list default="true" id="558ac743-39b1-4d9c-ab46-81873a9bc231" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/raft/config.go" afterPath="$PROJECT_DIR$/src/raft/config.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/raft/raft.go" afterPath="$PROJECT_DIR$/src/raft/raft.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/raft/test_test.go" afterPath="$PROJECT_DIR$/src/raft/test_test.go" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -9,17 +14,410 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file leaf-file-name="client.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lockservice/client.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="23">
+              <caret line="8" column="32" lean-forward="false" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
+              <folding>
+                <element signature="e#21#50#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/raft/config.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1323">
+              <caret line="111" column="25" lean-forward="false" selection-start-line="111" selection-start-column="19" selection-end-line="111" selection-end-column="25" />
+              <folding>
+                <element signature="e#14#16#0" expanded="false" />
+                <element signature="n#!!block;n#randstring#0" expanded="false" />
+                <element signature="e#2343#2345#0" expanded="false" />
+                <element signature="e#3510#4442#0" expanded="false" />
+                <element signature="e#3549#3582#0" expanded="false" />
+                <element signature="e#3622#4165#0" expanded="false" />
+                <element signature="e#3681#3950#0" expanded="false" />
+                <element signature="e#3745#3944#0" expanded="false" />
+                <element signature="e#4079#4160#0" expanded="false" />
+                <element signature="e#4171#4252#0" expanded="false" />
+                <element signature="e#4274#4438#0" expanded="false" />
+                <element signature="e#4355#4409#0" expanded="false" />
+                <element signature="n#!!block;n#cleanup#0" expanded="false" />
+                <element signature="e#4724#4782#0" expanded="false" />
+                <element signature="e#4751#4779#0" expanded="false" />
+                <element signature="e#5633#5705#0" expanded="false" />
+                <element signature="n#!!block;n#rpcCount#0" expanded="false" />
+                <element signature="n#!!block;n#setunreliable#0" expanded="false" />
+                <element signature="n#!!block;n#setlongreordering#0" expanded="false" />
+                <element signature="n#!!block;n#checkTerms#0" expanded="false" />
+                <element signature="e#6851#7037#0" expanded="false" />
+                <element signature="e#6875#7034#0" expanded="false" />
+                <element signature="e#6933#6956#0" expanded="false" />
+                <element signature="e#6979#7030#0" expanded="false" />
+                <element signature="n#!!block;n#checkNoLeader#0" expanded="false" />
+                <element signature="e#7151#7319#0" expanded="false" />
+                <element signature="e#7175#7316#0" expanded="false" />
+                <element signature="e#7236#7312#0" expanded="false" />
+                <element signature="n#!!block;n#nCommitted#0" expanded="false" />
+                <element signature="e#7497#7808#0" expanded="false" />
+                <element signature="e#7526#7563#0" expanded="false" />
+                <element signature="e#7641#7805#0" expanded="false" />
+                <element signature="e#7674#7773#0" expanded="false" />
+                <element signature="e#7831#7872#0" expanded="false" />
+                <element signature="n#!!block;n#wait#0" expanded="false" />
+                <element signature="e#8037#8366#0" expanded="false" />
+                <element signature="e#8085#8099#0" expanded="false" />
+                <element signature="e#8139#8155#0" expanded="false" />
+                <element signature="e#8176#8363#0" expanded="false" />
+                <element signature="e#8209#8359#0" expanded="false" />
+                <element signature="e#8254#8354#0" expanded="false" />
+                <element signature="e#8261#8284#0" expanded="false" />
+                <element signature="e#8412#8493#0" expanded="false" />
+                <element signature="e#8509#8536#0" expanded="false" />
+                <element signature="e#9152#9185#0" expanded="false" />
+                <element signature="e#9268#9306#0" expanded="false" />
+                <element signature="e#9334#9776#0" expanded="false" />
+                <element signature="e#9339#9387#0" expanded="false" />
+                <element signature="e#9501#9772#0" expanded="false" />
+                <element signature="e#9580#9729#0" expanded="false" />
+                <element signature="e#9650#9723#0" expanded="false" />
+                <element signature="e#9782#9824#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="persister.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/raft/persister.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="299">
+              <caret line="13" column="8" lean-forward="false" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="14" />
+              <folding>
+                <element signature="e#304#317#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/kvraft/config.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="182">
+              <caret line="39" column="9" lean-forward="false" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="9" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="raft.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1714">
+              <caret line="198" column="13" lean-forward="true" selection-start-line="198" selection-start-column="0" selection-end-line="199" selection-end-column="0" />
+              <folding>
+                <element signature="e#14#16#0" expanded="false" />
+                <element signature="e#693#695#0" expanded="false" />
+                <element signature="e#911#1079#0" expanded="false" />
+                <element signature="e#1089#1133#0" expanded="false" />
+                <element signature="e#1156#1158#0" expanded="false" />
+                <element signature="e#1302#1347#0" expanded="false" />
+                <element signature="e#1458#1479#0" expanded="false" />
+                <element signature="e#2066#2111#0" expanded="false" />
+                <element signature="n#!!block;n#GetState#0" expanded="false" />
+                <element signature="n#!!block;n#getIdentification#0" expanded="false" />
+                <element signature="e#2467#2469#0" expanded="false" />
+                <element signature="n#!!block;n#persist#0" expanded="false" />
+                <element signature="e#2914#2916#0" expanded="false" />
+                <element signature="n#!!block;n#readPersist#0" expanded="false" />
+                <element signature="e#3183#3185#0" expanded="false" />
+                <element signature="e#3362#3364#0" expanded="false" />
+                <element signature="e#3434#3499#0" expanded="false" />
+                <element signature="e#3523#3543#0" expanded="false" />
+                <element signature="e#3568#3602#0" expanded="false" />
+                <element signature="e#3775#3777#0" expanded="false" />
+                <element signature="n#!!block;n#resetElectTimeOut#0" expanded="false" />
+                <element signature="n#!!block;n#resetHeartBeatTimeOut#0" expanded="false" />
+                <element signature="n#!!block;n#checkTerm#0" expanded="false" />
+                <element signature="e#4147#4316#0" expanded="false" />
+                <element signature="e#5548#5550#0" expanded="false" />
+                <element signature="n#!!block;n#sendAppendEntries#0" expanded="false" />
+                <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+                <element signature="e#6802#7190#0" expanded="false" />
+                <element signature="e#6827#6888#0" expanded="false" />
+                <element signature="e#6935#7167#0" expanded="false" />
+                <element signature="e#7103#7119#0" expanded="false" />
+                <element signature="e#7143#7163#0" expanded="false" />
+                <element signature="e#7194#7644#0" expanded="false" />
+                <element signature="e#7204#7480#0" expanded="false" />
+                <element signature="e#7286#7456#0" expanded="false" />
+                <element signature="e#7461#7480#0" expanded="false" />
+                <element signature="e#7482#7641#0" expanded="false" />
+                <element signature="e#7649#7651#0" expanded="false" />
+                <element signature="n#!!block;n#Start#0" expanded="false" />
+                <element signature="e#8384#8386#0" expanded="false" />
+                <element signature="n#!!block;n#Kill#0" expanded="false" />
+                <element signature="e#8663#8665#0" expanded="false" />
+                <element signature="n#!!block;n#timestamp#0" expanded="false" />
+                <element signature="n#!!block;n#selectAsLeader#0" expanded="false" />
+                <element signature="e#9336#9415#0" expanded="false" />
+                <element signature="e#9340#9412#0" expanded="false" />
+                <element signature="n#!!block;n#selectAsFollower#0" expanded="false" />
+                <element signature="n#!!block;n#selectAsCandidate#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="time.go" pinned="false" current-in-tab="false">
+        <entry file="file://D:/ProgramData/go/src/time/time.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="264">
+              <caret line="619" column="5" lean-forward="false" selection-start-line="619" selection-start-column="5" selection-end-line="619" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="rand.go" pinned="false" current-in-tab="false">
+        <entry file="file://D:/ProgramData/go/src/math/rand/rand.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="273">
+              <caret line="276" column="5" lean-forward="false" selection-start-line="276" selection-start-column="5" selection-end-line="276" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="labrpc.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/labrpc/labrpc.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="80" column="20" lean-forward="false" selection-start-line="80" selection-start-column="20" selection-end-line="80" selection-end-column="20" />
+              <folding>
+                <element signature="e#2165#2295#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test_test.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/raft/test_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="389">
+              <caret line="29" column="15" lean-forward="false" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="22" />
+              <folding>
+                <element signature="e#14#16#0" expanded="false" />
+                <element signature="e#319#396#0" expanded="false" />
+                <element signature="e#880#957#0" expanded="false" />
+                <element signature="e#1305#1349#0" expanded="false" />
+                <element signature="e#1435#1476#0" expanded="false" />
+                <element signature="n#!!block;n#TestBasicAgree#0" expanded="false" />
+                <element signature="e#2081#2313#0" expanded="false" />
+                <element signature="e#2128#2183#0" expanded="false" />
+                <element signature="e#2246#2310#0" expanded="false" />
+                <element signature="n#!!block;n#TestFailAgree#0" expanded="false" />
+                <element signature="n#!!block;n#TestFailNoAgree#0" expanded="false" />
+                <element signature="e#3484#3526#0" expanded="false" />
+                <element signature="e#3542#3592#0" expanded="false" />
+                <element signature="e#3673#3723#0" expanded="false" />
+                <element signature="e#3858#3916#0" expanded="false" />
+                <element signature="e#4077#4120#0" expanded="false" />
+                <element signature="e#4150#4196#0" expanded="false" />
+                <element signature="n#!!block;n#TestConcurrentStarts#0" expanded="false" />
+                <element signature="e#4475#5964#0" expanded="false" />
+                <element signature="e#4490#4566#0" expanded="false" />
+                <element signature="e#4654#4708#0" expanded="false" />
+                <element signature="e#4809#5020#0" expanded="false" />
+                <element signature="e#4842#5012#0" expanded="false" />
+                <element signature="e#4938#4957#0" expanded="false" />
+                <element signature="e#4976#4995#0" expanded="false" />
+                <element signature="e#5078#5208#0" expanded="false" />
+                <element signature="e#5129#5204#0" expanded="false" />
+                <element signature="e#5270#5600#0" expanded="false" />
+                <element signature="e#5343#5540#0" expanded="false" />
+                <element signature="e#5361#5507#0" expanded="false" />
+                <element signature="e#5368#5405#0" expanded="false" />
+                <element signature="e#5546#5596#0" expanded="false" />
+                <element signature="e#5614#5709#0" expanded="false" />
+                <element signature="e#5660#5691#0" expanded="false" />
+                <element signature="e#5679#5686#0" expanded="false" />
+                <element signature="e#5743#5935#0" expanded="false" />
+                <element signature="e#5811#5860#0" expanded="false" />
+                <element signature="e#5833#5855#0" expanded="false" />
+                <element signature="e#5879#5931#0" expanded="false" />
+                <element signature="e#5979#6020#0" expanded="false" />
+                <element signature="n#!!block;n#TestRejoin#0" expanded="false" />
+                <element signature="n#!!block;n#TestBackup#0" expanded="false" />
+                <element signature="e#7288#7331#0" expanded="false" />
+                <element signature="e#7677#7706#0" expanded="false" />
+                <element signature="e#7848#7886#0" expanded="false" />
+                <element signature="e#7977#8020#0" expanded="false" />
+                <element signature="e#8130#8154#0" expanded="false" />
+                <element signature="e#8323#8352#0" expanded="false" />
+                <element signature="e#8401#8422#0" expanded="false" />
+                <element signature="n#!!block;n#TestCount#0" expanded="false" />
+                <element signature="e#8672#8746#0" expanded="false" />
+                <element signature="e#8705#8734#0" expanded="false" />
+                <element signature="e#8830#8908#0" expanded="false" />
+                <element signature="e#8980#10395#0" expanded="false" />
+                <element signature="e#8995#9071#0" expanded="false" />
+                <element signature="e#9196#9250#0" expanded="false" />
+                <element signature="e#9300#9635#0" expanded="false" />
+                <element signature="e#9425#9484#0" expanded="false" />
+                <element signature="e#9495#9568#0" expanded="false" />
+                <element signature="e#9594#9631#0" expanded="false" />
+                <element signature="e#9668#9949#0" expanded="false" />
+                <element signature="e#9772#9945#0" expanded="false" />
+                <element signature="e#9790#9850#0" expanded="false" />
+                <element signature="e#10013#10215#0" expanded="false" />
+                <element signature="e#10064#10182#0" expanded="false" />
+                <element signature="e#10070#10116#0" expanded="false" />
+                <element signature="e#10229#10251#0" expanded="false" />
+                <element signature="e#10288#10366#0" expanded="false" />
+                <element signature="e#10410#10451#0" expanded="false" />
+                <element signature="e#10530#10562#0" expanded="false" />
+                <element signature="e#10589#10668#0" expanded="false" />
+                <element signature="n#!!block;n#TestPersist1#0" expanded="false" />
+                <element signature="e#10938#10958#0" expanded="false" />
+                <element signature="e#10989#11030#0" expanded="false" />
+                <element signature="n#!!block;n#TestPersist2#0" expanded="false" />
+                <element signature="e#11759#12480#0" expanded="false" />
+                <element signature="n#!!block;n#TestPersist3#0" expanded="false" />
+                <element signature="e#13177#13179#0" expanded="false" />
+                <element signature="n#!!block;n#TestFigure8#0" expanded="false" />
+                <element signature="e#13978#14595#0" expanded="false" />
+                <element signature="e#14026#14145#0" expanded="false" />
+                <element signature="e#14054#14141#0" expanded="false" />
+                <element signature="e#14113#14136#0" expanded="false" />
+                <element signature="e#14178#14309#0" expanded="false" />
+                <element signature="e#14315#14401#0" expanded="false" />
+                <element signature="e#14421#14460#0" expanded="false" />
+                <element signature="e#14475#14592#0" expanded="false" />
+                <element signature="e#14532#14588#0" expanded="false" />
+                <element signature="e#14627#14697#0" expanded="false" />
+                <element signature="e#14654#14694#0" expanded="false" />
+                <element signature="n#!!block;n#TestUnreliableAgree#0" expanded="false" />
+                <element signature="e#14988#15148#0" expanded="false" />
+                <element signature="e#15015#15125#0" expanded="false" />
+                <element signature="e#15055#15111#0" expanded="false" />
+                <element signature="n#!!block;n#TestFigure8Unreliable#0" expanded="false" />
+                <element signature="e#15499#16221#0" expanded="false" />
+                <element signature="e#15519#15555#0" expanded="false" />
+                <element signature="e#15602#15712#0" expanded="false" />
+                <element signature="e#15687#15708#0" expanded="false" />
+                <element signature="e#15745#15876#0" expanded="false" />
+                <element signature="e#15882#15968#0" expanded="false" />
+                <element signature="e#16055#16098#0" expanded="false" />
+                <element signature="e#16113#16218#0" expanded="false" />
+                <element signature="e#16176#16214#0" expanded="false" />
+                <element signature="e#16253#16312#0" expanded="false" />
+                <element signature="e#16286#16309#0" expanded="false" />
+                <element signature="n#!!block;n#internalChurn#0" expanded="false" />
+                <element signature="e#16452#16501#0" expanded="false" />
+                <element signature="e#16507#16545#0" expanded="false" />
+                <element signature="e#16712#17691#0" expanded="false" />
+                <element signature="e#16757#16770#0" expanded="false" />
+                <element signature="e#16828#17673#0" expanded="false" />
+                <element signature="e#16911#17146#0" expanded="false" />
+                <element signature="e#17042#17141#0" expanded="false" />
+                <element signature="e#17091#17135#0" expanded="false" />
+                <element signature="e#17156#17598#0" expanded="false" />
+                <element signature="e#17162#17211#0" expanded="false" />
+                <element signature="e#17271#17293#0" expanded="false" />
+                <element signature="e#17294#17593#0" expanded="false" />
+                <element signature="e#17349#17533#0" expanded="false" />
+                <element signature="e#17384#17457#0" expanded="false" />
+                <element signature="e#17404#17449#0" expanded="false" />
+                <element signature="e#17463#17514#0" expanded="false" />
+                <element signature="e#17604#17669#0" expanded="false" />
+                <element signature="e#17754#17816#0" expanded="false" />
+                <element signature="e#17855#18493#0" expanded="false" />
+                <element signature="e#17888#17943#0" expanded="false" />
+                <element signature="e#17976#18079#0" expanded="false" />
+                <element signature="e#18033#18057#0" expanded="false" />
+                <element signature="e#18112#18197#0" expanded="false" />
+                <element signature="e#18169#18193#0" expanded="false" />
+                <element signature="e#18201#18265#0" expanded="false" />
+                <element signature="e#18584#18653#0" expanded="false" />
+                <element signature="e#18611#18633#0" expanded="false" />
+                <element signature="e#18731#18834#0" expanded="false" />
+                <element signature="e#18765#18798#0" expanded="false" />
+                <element signature="e#18995#19136#0" expanded="false" />
+                <element signature="e#19060#19096#0" expanded="false" />
+                <element signature="e#19102#19133#0" expanded="false" />
+                <element signature="e#19165#19315#0" expanded="false" />
+                <element signature="e#19209#19250#0" expanded="false" />
+                <element signature="e#19226#19246#0" expanded="false" />
+                <element signature="e#19268#19312#0" expanded="false" />
+                <element signature="n#!!block;n#TestReliableChurn#0" expanded="false" />
+                <element signature="n#!!block;n#TestUnreliableChurn#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="testing.go" pinned="false" current-in-tab="false">
+        <entry file="file://D:/ProgramData/go/src/testing/testing.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-417">
+              <caret line="470" column="5" lean-forward="false" selection-start-line="470" selection-start-column="5" selection-end-line="470" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="GOROOT" path="D:/ProgramData/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="urls">
+      <list>
+        <option value="file://$PROJECT_DIR$" />
+      </list>
+    </option>
+  </component>
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
       <projects_view />
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="77" />
-    <option name="y" value="-4" />
-    <option name="width" value="2483" />
-    <option name="height" value="1444" />
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/labrpc/labrpc.go" />
+        <option value="$PROJECT_DIR$/src/raft/config.go" />
+        <option value="$PROJECT_DIR$/src/raft/raft.go" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <annotation-enable>false</annotation-enable>
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="63" />
+    <option name="y" value="82" />
+    <option name="width" value="1932" />
+    <option name="height" value="1008" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -36,42 +434,47 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scratches" />
-      <pane id="Scope" />
+      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="NJU-DisSys-2017" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="NJU-DisSys-2017" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="NJU-DisSys-2017" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="NJU-DisSys-2017" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
+          <expand>
+            <path>
+              <item name="NJU-DisSys-2017" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NJU-DisSys-2017" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NJU-DisSys-2017" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NJU-DisSys-2017" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NJU-DisSys-2017" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NJU-DisSys-2017" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="raft" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="terminal" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="configurable.Global.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Project.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Module.GOPATH.is.expanded" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -85,13 +488,15 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
-      <module name="" />
-      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
-      <option name="PROGRAM_PARAMETERS" />
-      <predefined_log_file id="idea.log" enabled="true" />
-      <method />
+  <component name="RunManager" selected="Go Test.TestInitialElection in test_test.go">
+    <configuration name="TestInitialElection in test_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true">
+      <module name="NJU-DisSys-2017" />
+      <working_directory value="$PROJECT_DIR$/src/raft" />
+      <go_parameters value="-i" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="raft" />
+      <pattern value="^TestInitialElection$" />
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HTML_USED" value="false" />
@@ -99,7 +504,6 @@
       <option name="HEIGHT" value="300" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <module />
-      <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
@@ -114,7 +518,6 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
-      <method />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
@@ -135,7 +538,12 @@
       </option>
       <envs />
       <patterns />
-      <method />
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file id="idea.log" enabled="true" />
     </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
@@ -143,7 +551,6 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
@@ -171,8 +578,26 @@
       <envs />
       <properties />
       <listeners />
-      <method />
     </configuration>
+    <configuration name="election" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="NJU-DisSys-2017" />
+      <working_directory value="$PROJECT_DIR$/src/raft" />
+      <go_parameters value="-i" />
+      <parameters value="-run Election" />
+      <framework value="gotest" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$/src/raft" />
+      <filePath value="$PROJECT_DIR$" />
+    </configuration>
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="Go Test.election" />
+      <item index="1" class="java.lang.String" itemvalue="Go Test.TestInitialElection in test_test.go" />
+    </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Go Test.TestInitialElection in test_test.go" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
@@ -184,46 +609,879 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1508750596625</updated>
+      <workItem from="1511262732561" duration="1302000" />
+      <workItem from="1511264375018" duration="1011000" />
+      <workItem from="1511265523228" duration="26432000" />
     </task>
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="TestInitialElection_in_test_test_go - 2017.11.21 at 20h 55m 08s.xml">
+      <configuration name="TestInitialElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="election - 2017.11.21 at 19h 55m 56s.xml">
+      <configuration name="election" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="election - 2017.11.21 at 19h 56m 19s.xml">
+      <configuration name="election" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="election - 2017.11.21 at 19h 59m 43s.xml">
+      <configuration name="election" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="election - 2017.11.21 at 19h 59m 44s.xml">
+      <configuration name="election" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="28745000" />
+  </component>
   <component name="ToolWindowManager">
-    <frame x="77" y="-4" width="2483" height="1444" extended-state="6" />
+    <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24969795" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34978542" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32273263" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
     <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/lockservice/client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="8" column="32" lean-forward="false" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
+          <folding>
+            <element signature="e#21#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/persister.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="598">
+          <caret line="26" column="24" lean-forward="false" selection-start-line="26" selection-start-column="24" selection-end-line="26" selection-end-column="24" />
+          <folding>
+            <element signature="e#304#317#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/config.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#16#0" expanded="false" />
+            <element signature="n#!!block;n#randstring#0" expanded="false" />
+            <element signature="e#2343#2345#0" expanded="false" />
+            <element signature="e#3510#4442#0" expanded="false" />
+            <element signature="e#3549#3582#0" expanded="false" />
+            <element signature="e#3622#4165#0" expanded="false" />
+            <element signature="e#3681#3950#0" expanded="false" />
+            <element signature="e#3745#3944#0" expanded="false" />
+            <element signature="e#4079#4160#0" expanded="false" />
+            <element signature="e#4171#4252#0" expanded="false" />
+            <element signature="e#4274#4438#0" expanded="false" />
+            <element signature="e#4355#4409#0" expanded="false" />
+            <element signature="n#!!block;n#cleanup#0" expanded="false" />
+            <element signature="e#4724#4782#0" expanded="false" />
+            <element signature="e#4751#4779#0" expanded="false" />
+            <element signature="e#5633#5705#0" expanded="false" />
+            <element signature="n#!!block;n#rpcCount#0" expanded="false" />
+            <element signature="n#!!block;n#setunreliable#0" expanded="false" />
+            <element signature="n#!!block;n#setlongreordering#0" expanded="false" />
+            <element signature="n#!!block;n#checkTerms#0" expanded="false" />
+            <element signature="e#6851#7037#0" expanded="false" />
+            <element signature="e#6875#7034#0" expanded="false" />
+            <element signature="e#6933#6956#0" expanded="false" />
+            <element signature="e#6979#7030#0" expanded="false" />
+            <element signature="n#!!block;n#checkNoLeader#0" expanded="false" />
+            <element signature="e#7151#7319#0" expanded="false" />
+            <element signature="e#7175#7316#0" expanded="false" />
+            <element signature="e#7236#7312#0" expanded="false" />
+            <element signature="n#!!block;n#nCommitted#0" expanded="false" />
+            <element signature="e#7497#7808#0" expanded="false" />
+            <element signature="e#7526#7563#0" expanded="false" />
+            <element signature="e#7641#7805#0" expanded="false" />
+            <element signature="e#7674#7773#0" expanded="false" />
+            <element signature="e#7831#7872#0" expanded="false" />
+            <element signature="n#!!block;n#wait#0" expanded="false" />
+            <element signature="e#8037#8366#0" expanded="false" />
+            <element signature="e#8085#8099#0" expanded="false" />
+            <element signature="e#8139#8155#0" expanded="false" />
+            <element signature="e#8176#8363#0" expanded="false" />
+            <element signature="e#8209#8359#0" expanded="false" />
+            <element signature="e#8254#8354#0" expanded="false" />
+            <element signature="e#8261#8284#0" expanded="false" />
+            <element signature="e#8412#8493#0" expanded="false" />
+            <element signature="e#8509#8536#0" expanded="false" />
+            <element signature="e#9152#9185#0" expanded="false" />
+            <element signature="e#9268#9306#0" expanded="false" />
+            <element signature="e#9334#9776#0" expanded="false" />
+            <element signature="e#9339#9387#0" expanded="false" />
+            <element signature="e#9501#9772#0" expanded="false" />
+            <element signature="e#9580#9729#0" expanded="false" />
+            <element signature="e#9650#9723#0" expanded="false" />
+            <element signature="e#9782#9824#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/test_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#16#0" expanded="false" />
+            <element signature="e#319#396#0" expanded="false" />
+            <element signature="e#880#957#0" expanded="false" />
+            <element signature="e#1305#1349#0" expanded="false" />
+            <element signature="e#1435#1476#0" expanded="false" />
+            <element signature="n#!!block;n#TestBasicAgree#0" expanded="false" />
+            <element signature="e#2081#2313#0" expanded="false" />
+            <element signature="e#2128#2183#0" expanded="false" />
+            <element signature="e#2246#2310#0" expanded="false" />
+            <element signature="n#!!block;n#TestFailAgree#0" expanded="false" />
+            <element signature="n#!!block;n#TestFailNoAgree#0" expanded="false" />
+            <element signature="e#3484#3526#0" expanded="false" />
+            <element signature="e#3542#3592#0" expanded="false" />
+            <element signature="e#3673#3723#0" expanded="false" />
+            <element signature="e#3858#3916#0" expanded="false" />
+            <element signature="e#4077#4120#0" expanded="false" />
+            <element signature="e#4150#4196#0" expanded="false" />
+            <element signature="n#!!block;n#TestConcurrentStarts#0" expanded="false" />
+            <element signature="e#4475#5964#0" expanded="false" />
+            <element signature="e#4490#4566#0" expanded="false" />
+            <element signature="e#4654#4708#0" expanded="false" />
+            <element signature="e#4809#5020#0" expanded="false" />
+            <element signature="e#4842#5012#0" expanded="false" />
+            <element signature="e#4938#4957#0" expanded="false" />
+            <element signature="e#4976#4995#0" expanded="false" />
+            <element signature="e#5078#5208#0" expanded="false" />
+            <element signature="e#5129#5204#0" expanded="false" />
+            <element signature="e#5270#5600#0" expanded="false" />
+            <element signature="e#5343#5540#0" expanded="false" />
+            <element signature="e#5361#5507#0" expanded="false" />
+            <element signature="e#5368#5405#0" expanded="false" />
+            <element signature="e#5546#5596#0" expanded="false" />
+            <element signature="e#5614#5709#0" expanded="false" />
+            <element signature="e#5660#5691#0" expanded="false" />
+            <element signature="e#5679#5686#0" expanded="false" />
+            <element signature="e#5743#5935#0" expanded="false" />
+            <element signature="e#5811#5860#0" expanded="false" />
+            <element signature="e#5833#5855#0" expanded="false" />
+            <element signature="e#5879#5931#0" expanded="false" />
+            <element signature="e#5979#6020#0" expanded="false" />
+            <element signature="n#!!block;n#TestRejoin#0" expanded="false" />
+            <element signature="n#!!block;n#TestBackup#0" expanded="false" />
+            <element signature="e#7288#7331#0" expanded="false" />
+            <element signature="e#7677#7706#0" expanded="false" />
+            <element signature="e#7848#7886#0" expanded="false" />
+            <element signature="e#7977#8020#0" expanded="false" />
+            <element signature="e#8130#8154#0" expanded="false" />
+            <element signature="e#8323#8352#0" expanded="false" />
+            <element signature="e#8401#8422#0" expanded="false" />
+            <element signature="n#!!block;n#TestCount#0" expanded="false" />
+            <element signature="e#8672#8746#0" expanded="false" />
+            <element signature="e#8705#8734#0" expanded="false" />
+            <element signature="e#8830#8908#0" expanded="false" />
+            <element signature="e#8980#10395#0" expanded="false" />
+            <element signature="e#8995#9071#0" expanded="false" />
+            <element signature="e#9196#9250#0" expanded="false" />
+            <element signature="e#9300#9635#0" expanded="false" />
+            <element signature="e#9425#9484#0" expanded="false" />
+            <element signature="e#9495#9568#0" expanded="false" />
+            <element signature="e#9594#9631#0" expanded="false" />
+            <element signature="e#9668#9949#0" expanded="false" />
+            <element signature="e#9772#9945#0" expanded="false" />
+            <element signature="e#9790#9850#0" expanded="false" />
+            <element signature="e#10013#10215#0" expanded="false" />
+            <element signature="e#10064#10182#0" expanded="false" />
+            <element signature="e#10070#10116#0" expanded="false" />
+            <element signature="e#10229#10251#0" expanded="false" />
+            <element signature="e#10288#10366#0" expanded="false" />
+            <element signature="e#10410#10451#0" expanded="false" />
+            <element signature="e#10530#10562#0" expanded="false" />
+            <element signature="e#10589#10668#0" expanded="false" />
+            <element signature="n#!!block;n#TestPersist1#0" expanded="false" />
+            <element signature="e#10938#10958#0" expanded="false" />
+            <element signature="e#10989#11030#0" expanded="false" />
+            <element signature="n#!!block;n#TestPersist2#0" expanded="false" />
+            <element signature="e#11759#12480#0" expanded="false" />
+            <element signature="n#!!block;n#TestPersist3#0" expanded="false" />
+            <element signature="e#13177#13179#0" expanded="false" />
+            <element signature="n#!!block;n#TestFigure8#0" expanded="false" />
+            <element signature="e#13978#14595#0" expanded="false" />
+            <element signature="e#14026#14145#0" expanded="false" />
+            <element signature="e#14054#14141#0" expanded="false" />
+            <element signature="e#14113#14136#0" expanded="false" />
+            <element signature="e#14178#14309#0" expanded="false" />
+            <element signature="e#14315#14401#0" expanded="false" />
+            <element signature="e#14421#14460#0" expanded="false" />
+            <element signature="e#14475#14592#0" expanded="false" />
+            <element signature="e#14532#14588#0" expanded="false" />
+            <element signature="e#14627#14697#0" expanded="false" />
+            <element signature="e#14654#14694#0" expanded="false" />
+            <element signature="n#!!block;n#TestUnreliableAgree#0" expanded="false" />
+            <element signature="e#14988#15148#0" expanded="false" />
+            <element signature="e#15015#15125#0" expanded="false" />
+            <element signature="e#15055#15111#0" expanded="false" />
+            <element signature="n#!!block;n#TestFigure8Unreliable#0" expanded="false" />
+            <element signature="e#15499#16221#0" expanded="false" />
+            <element signature="e#15519#15555#0" expanded="false" />
+            <element signature="e#15602#15712#0" expanded="false" />
+            <element signature="e#15687#15708#0" expanded="false" />
+            <element signature="e#15745#15876#0" expanded="false" />
+            <element signature="e#15882#15968#0" expanded="false" />
+            <element signature="e#16055#16098#0" expanded="false" />
+            <element signature="e#16113#16218#0" expanded="false" />
+            <element signature="e#16176#16214#0" expanded="false" />
+            <element signature="e#16253#16312#0" expanded="false" />
+            <element signature="e#16286#16309#0" expanded="false" />
+            <element signature="n#!!block;n#internalChurn#0" expanded="false" />
+            <element signature="e#16452#16501#0" expanded="false" />
+            <element signature="e#16507#16545#0" expanded="false" />
+            <element signature="e#16712#17691#0" expanded="false" />
+            <element signature="e#16757#16770#0" expanded="false" />
+            <element signature="e#16828#17673#0" expanded="false" />
+            <element signature="e#16911#17146#0" expanded="false" />
+            <element signature="e#17042#17141#0" expanded="false" />
+            <element signature="e#17091#17135#0" expanded="false" />
+            <element signature="e#17156#17598#0" expanded="false" />
+            <element signature="e#17162#17211#0" expanded="false" />
+            <element signature="e#17271#17293#0" expanded="false" />
+            <element signature="e#17294#17593#0" expanded="false" />
+            <element signature="e#17349#17533#0" expanded="false" />
+            <element signature="e#17384#17457#0" expanded="false" />
+            <element signature="e#17404#17449#0" expanded="false" />
+            <element signature="e#17463#17514#0" expanded="false" />
+            <element signature="e#17604#17669#0" expanded="false" />
+            <element signature="e#17754#17816#0" expanded="false" />
+            <element signature="e#17855#18493#0" expanded="false" />
+            <element signature="e#17888#17943#0" expanded="false" />
+            <element signature="e#17976#18079#0" expanded="false" />
+            <element signature="e#18033#18057#0" expanded="false" />
+            <element signature="e#18112#18197#0" expanded="false" />
+            <element signature="e#18169#18193#0" expanded="false" />
+            <element signature="e#18201#18265#0" expanded="false" />
+            <element signature="e#18584#18653#0" expanded="false" />
+            <element signature="e#18611#18633#0" expanded="false" />
+            <element signature="e#18731#18834#0" expanded="false" />
+            <element signature="e#18765#18798#0" expanded="false" />
+            <element signature="e#18995#19136#0" expanded="false" />
+            <element signature="e#19060#19096#0" expanded="false" />
+            <element signature="e#19102#19133#0" expanded="false" />
+            <element signature="e#19165#19315#0" expanded="false" />
+            <element signature="e#19209#19250#0" expanded="false" />
+            <element signature="e#19226#19246#0" expanded="false" />
+            <element signature="e#19268#19312#0" expanded="false" />
+            <element signature="n#!!block;n#TestReliableChurn#0" expanded="false" />
+            <element signature="n#!!block;n#TestUnreliableChurn#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/util.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="15" column="22" lean-forward="false" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
+          <folding>
+            <element signature="e#14#16#0" expanded="false" />
+            <element signature="e#693#695#0" expanded="false" />
+            <element signature="e#911#1079#0" expanded="false" />
+            <element signature="e#1089#1133#0" expanded="false" />
+            <element signature="e#1156#1158#0" expanded="false" />
+            <element signature="e#1302#1347#0" expanded="false" />
+            <element signature="e#1458#1479#0" expanded="false" />
+            <element signature="e#2066#2111#0" expanded="false" />
+            <element signature="n#!!block;n#GetState#0" expanded="false" />
+            <element signature="n#!!block;n#getIdentification#0" expanded="false" />
+            <element signature="e#2467#2469#0" expanded="false" />
+            <element signature="n#!!block;n#persist#0" expanded="false" />
+            <element signature="e#2914#2916#0" expanded="false" />
+            <element signature="n#!!block;n#readPersist#0" expanded="false" />
+            <element signature="e#3183#3185#0" expanded="false" />
+            <element signature="e#3362#3364#0" expanded="false" />
+            <element signature="e#3434#3499#0" expanded="false" />
+            <element signature="e#3523#3543#0" expanded="false" />
+            <element signature="e#3568#3602#0" expanded="false" />
+            <element signature="e#3775#3777#0" expanded="false" />
+            <element signature="n#!!block;n#resetElectTimeOut#0" expanded="false" />
+            <element signature="n#!!block;n#resetHeartBeatTimeOut#0" expanded="false" />
+            <element signature="n#!!block;n#checkTerm#0" expanded="false" />
+            <element signature="e#4147#4316#0" expanded="false" />
+            <element signature="e#5548#5550#0" expanded="false" />
+            <element signature="n#!!block;n#sendAppendEntries#0" expanded="false" />
+            <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+            <element signature="e#6802#7190#0" expanded="false" />
+            <element signature="e#6827#6888#0" expanded="false" />
+            <element signature="e#6935#7167#0" expanded="false" />
+            <element signature="e#7103#7119#0" expanded="false" />
+            <element signature="e#7143#7163#0" expanded="false" />
+            <element signature="e#7194#7644#0" expanded="false" />
+            <element signature="e#7204#7480#0" expanded="false" />
+            <element signature="e#7286#7456#0" expanded="false" />
+            <element signature="e#7461#7480#0" expanded="false" />
+            <element signature="e#7482#7641#0" expanded="false" />
+            <element signature="e#7649#7651#0" expanded="false" />
+            <element signature="n#!!block;n#Start#0" expanded="false" />
+            <element signature="e#8384#8386#0" expanded="false" />
+            <element signature="n#!!block;n#Kill#0" expanded="false" />
+            <element signature="e#8663#8665#0" expanded="false" />
+            <element signature="n#!!block;n#timestamp#0" expanded="false" />
+            <element signature="n#!!block;n#selectAsLeader#0" expanded="false" />
+            <element signature="e#9336#9415#0" expanded="false" />
+            <element signature="e#9340#9412#0" expanded="false" />
+            <element signature="n#!!block;n#selectAsFollower#0" expanded="false" />
+            <element signature="n#!!block;n#selectAsCandidate#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lockservice/client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="8" column="32" lean-forward="false" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
+          <folding>
+            <element signature="e#21#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/config.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#16#0" expanded="false" />
+            <element signature="n#!!block;n#randstring#0" expanded="false" />
+            <element signature="e#2343#2345#0" expanded="false" />
+            <element signature="e#3510#4442#0" expanded="false" />
+            <element signature="e#3549#3582#0" expanded="false" />
+            <element signature="e#3622#4165#0" expanded="false" />
+            <element signature="e#3681#3950#0" expanded="false" />
+            <element signature="e#3745#3944#0" expanded="false" />
+            <element signature="e#4079#4160#0" expanded="false" />
+            <element signature="e#4171#4252#0" expanded="false" />
+            <element signature="e#4274#4438#0" expanded="false" />
+            <element signature="e#4355#4409#0" expanded="false" />
+            <element signature="n#!!block;n#cleanup#0" expanded="false" />
+            <element signature="e#4724#4782#0" expanded="false" />
+            <element signature="e#4751#4779#0" expanded="false" />
+            <element signature="e#5633#5705#0" expanded="false" />
+            <element signature="n#!!block;n#rpcCount#0" expanded="false" />
+            <element signature="n#!!block;n#setunreliable#0" expanded="false" />
+            <element signature="n#!!block;n#setlongreordering#0" expanded="false" />
+            <element signature="n#!!block;n#checkTerms#0" expanded="false" />
+            <element signature="e#6851#7037#0" expanded="false" />
+            <element signature="e#6875#7034#0" expanded="false" />
+            <element signature="e#6933#6956#0" expanded="false" />
+            <element signature="e#6979#7030#0" expanded="false" />
+            <element signature="n#!!block;n#checkNoLeader#0" expanded="false" />
+            <element signature="e#7151#7319#0" expanded="false" />
+            <element signature="e#7175#7316#0" expanded="false" />
+            <element signature="e#7236#7312#0" expanded="false" />
+            <element signature="n#!!block;n#nCommitted#0" expanded="false" />
+            <element signature="e#7497#7808#0" expanded="false" />
+            <element signature="e#7526#7563#0" expanded="false" />
+            <element signature="e#7641#7805#0" expanded="false" />
+            <element signature="e#7674#7773#0" expanded="false" />
+            <element signature="e#7831#7872#0" expanded="false" />
+            <element signature="n#!!block;n#wait#0" expanded="false" />
+            <element signature="e#8037#8366#0" expanded="false" />
+            <element signature="e#8085#8099#0" expanded="false" />
+            <element signature="e#8139#8155#0" expanded="false" />
+            <element signature="e#8176#8363#0" expanded="false" />
+            <element signature="e#8209#8359#0" expanded="false" />
+            <element signature="e#8254#8354#0" expanded="false" />
+            <element signature="e#8261#8284#0" expanded="false" />
+            <element signature="e#8412#8493#0" expanded="false" />
+            <element signature="e#8509#8536#0" expanded="false" />
+            <element signature="e#9152#9185#0" expanded="false" />
+            <element signature="e#9268#9306#0" expanded="false" />
+            <element signature="e#9334#9776#0" expanded="false" />
+            <element signature="e#9339#9387#0" expanded="false" />
+            <element signature="e#9501#9772#0" expanded="false" />
+            <element signature="e#9580#9729#0" expanded="false" />
+            <element signature="e#9650#9723#0" expanded="false" />
+            <element signature="e#9782#9824#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/persister.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="598">
+          <caret line="26" column="24" lean-forward="false" selection-start-line="26" selection-start-column="24" selection-end-line="26" selection-end-column="24" />
+          <folding>
+            <element signature="e#304#317#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="322">
+          <caret line="14" column="33" lean-forward="false" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+          <folding>
+            <element signature="e#14#16#0" expanded="false" />
+            <element signature="e#693#695#0" expanded="false" />
+            <element signature="e#911#1079#0" expanded="false" />
+            <element signature="e#1089#1133#0" expanded="false" />
+            <element signature="e#1156#1158#0" expanded="false" />
+            <element signature="e#1302#1347#0" expanded="false" />
+            <element signature="e#1458#1479#0" expanded="false" />
+            <element signature="e#2066#2111#0" expanded="false" />
+            <element signature="n#!!block;n#GetState#0" expanded="false" />
+            <element signature="n#!!block;n#getIdentification#0" expanded="false" />
+            <element signature="e#2467#2469#0" expanded="false" />
+            <element signature="n#!!block;n#persist#0" expanded="false" />
+            <element signature="e#2914#2916#0" expanded="false" />
+            <element signature="n#!!block;n#readPersist#0" expanded="false" />
+            <element signature="e#3183#3185#0" expanded="false" />
+            <element signature="e#3362#3364#0" expanded="false" />
+            <element signature="e#3434#3499#0" expanded="false" />
+            <element signature="e#3523#3543#0" expanded="false" />
+            <element signature="e#3568#3602#0" expanded="false" />
+            <element signature="e#3775#3777#0" expanded="false" />
+            <element signature="n#!!block;n#resetElectTimeOut#0" expanded="false" />
+            <element signature="n#!!block;n#resetHeartBeatTimeOut#0" expanded="false" />
+            <element signature="n#!!block;n#checkTerm#0" expanded="false" />
+            <element signature="e#4147#4316#0" expanded="false" />
+            <element signature="e#5548#5550#0" expanded="false" />
+            <element signature="n#!!block;n#sendAppendEntries#0" expanded="false" />
+            <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+            <element signature="e#6802#7190#0" expanded="false" />
+            <element signature="e#6827#6888#0" expanded="false" />
+            <element signature="e#6935#7167#0" expanded="false" />
+            <element signature="e#7103#7119#0" expanded="false" />
+            <element signature="e#7143#7163#0" expanded="false" />
+            <element signature="e#7194#7644#0" expanded="false" />
+            <element signature="e#7204#7480#0" expanded="false" />
+            <element signature="e#7286#7456#0" expanded="false" />
+            <element signature="e#7461#7480#0" expanded="false" />
+            <element signature="e#7482#7641#0" expanded="false" />
+            <element signature="e#7649#7651#0" expanded="false" />
+            <element signature="n#!!block;n#Start#0" expanded="false" />
+            <element signature="e#8384#8386#0" expanded="false" />
+            <element signature="n#!!block;n#Kill#0" expanded="false" />
+            <element signature="e#8663#8665#0" expanded="false" />
+            <element signature="n#!!block;n#timestamp#0" expanded="false" />
+            <element signature="n#!!block;n#selectAsLeader#0" expanded="false" />
+            <element signature="e#9336#9415#0" expanded="false" />
+            <element signature="e#9340#9412#0" expanded="false" />
+            <element signature="n#!!block;n#selectAsFollower#0" expanded="false" />
+            <element signature="n#!!block;n#selectAsCandidate#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/util.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/labrpc/test_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5520">
+          <caret line="93" column="0" lean-forward="true" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+          <folding>
+            <element signature="e#16#107#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/ProgramData/go/src/testing/testing.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-417">
+          <caret line="470" column="5" lean-forward="false" selection-start-line="470" selection-start-column="5" selection-end-line="470" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/test_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="389">
+          <caret line="29" column="15" lean-forward="false" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="22" />
+          <folding>
+            <element signature="e#14#16#0" expanded="false" />
+            <element signature="e#319#396#0" expanded="false" />
+            <element signature="e#880#957#0" expanded="false" />
+            <element signature="e#1305#1349#0" expanded="false" />
+            <element signature="e#1435#1476#0" expanded="false" />
+            <element signature="n#!!block;n#TestBasicAgree#0" expanded="false" />
+            <element signature="e#2081#2313#0" expanded="false" />
+            <element signature="e#2128#2183#0" expanded="false" />
+            <element signature="e#2246#2310#0" expanded="false" />
+            <element signature="n#!!block;n#TestFailAgree#0" expanded="false" />
+            <element signature="n#!!block;n#TestFailNoAgree#0" expanded="false" />
+            <element signature="e#3484#3526#0" expanded="false" />
+            <element signature="e#3542#3592#0" expanded="false" />
+            <element signature="e#3673#3723#0" expanded="false" />
+            <element signature="e#3858#3916#0" expanded="false" />
+            <element signature="e#4077#4120#0" expanded="false" />
+            <element signature="e#4150#4196#0" expanded="false" />
+            <element signature="n#!!block;n#TestConcurrentStarts#0" expanded="false" />
+            <element signature="e#4475#5964#0" expanded="false" />
+            <element signature="e#4490#4566#0" expanded="false" />
+            <element signature="e#4654#4708#0" expanded="false" />
+            <element signature="e#4809#5020#0" expanded="false" />
+            <element signature="e#4842#5012#0" expanded="false" />
+            <element signature="e#4938#4957#0" expanded="false" />
+            <element signature="e#4976#4995#0" expanded="false" />
+            <element signature="e#5078#5208#0" expanded="false" />
+            <element signature="e#5129#5204#0" expanded="false" />
+            <element signature="e#5270#5600#0" expanded="false" />
+            <element signature="e#5343#5540#0" expanded="false" />
+            <element signature="e#5361#5507#0" expanded="false" />
+            <element signature="e#5368#5405#0" expanded="false" />
+            <element signature="e#5546#5596#0" expanded="false" />
+            <element signature="e#5614#5709#0" expanded="false" />
+            <element signature="e#5660#5691#0" expanded="false" />
+            <element signature="e#5679#5686#0" expanded="false" />
+            <element signature="e#5743#5935#0" expanded="false" />
+            <element signature="e#5811#5860#0" expanded="false" />
+            <element signature="e#5833#5855#0" expanded="false" />
+            <element signature="e#5879#5931#0" expanded="false" />
+            <element signature="e#5979#6020#0" expanded="false" />
+            <element signature="n#!!block;n#TestRejoin#0" expanded="false" />
+            <element signature="n#!!block;n#TestBackup#0" expanded="false" />
+            <element signature="e#7288#7331#0" expanded="false" />
+            <element signature="e#7677#7706#0" expanded="false" />
+            <element signature="e#7848#7886#0" expanded="false" />
+            <element signature="e#7977#8020#0" expanded="false" />
+            <element signature="e#8130#8154#0" expanded="false" />
+            <element signature="e#8323#8352#0" expanded="false" />
+            <element signature="e#8401#8422#0" expanded="false" />
+            <element signature="n#!!block;n#TestCount#0" expanded="false" />
+            <element signature="e#8672#8746#0" expanded="false" />
+            <element signature="e#8705#8734#0" expanded="false" />
+            <element signature="e#8830#8908#0" expanded="false" />
+            <element signature="e#8980#10395#0" expanded="false" />
+            <element signature="e#8995#9071#0" expanded="false" />
+            <element signature="e#9196#9250#0" expanded="false" />
+            <element signature="e#9300#9635#0" expanded="false" />
+            <element signature="e#9425#9484#0" expanded="false" />
+            <element signature="e#9495#9568#0" expanded="false" />
+            <element signature="e#9594#9631#0" expanded="false" />
+            <element signature="e#9668#9949#0" expanded="false" />
+            <element signature="e#9772#9945#0" expanded="false" />
+            <element signature="e#9790#9850#0" expanded="false" />
+            <element signature="e#10013#10215#0" expanded="false" />
+            <element signature="e#10064#10182#0" expanded="false" />
+            <element signature="e#10070#10116#0" expanded="false" />
+            <element signature="e#10229#10251#0" expanded="false" />
+            <element signature="e#10288#10366#0" expanded="false" />
+            <element signature="e#10410#10451#0" expanded="false" />
+            <element signature="e#10530#10562#0" expanded="false" />
+            <element signature="e#10589#10668#0" expanded="false" />
+            <element signature="n#!!block;n#TestPersist1#0" expanded="false" />
+            <element signature="e#10938#10958#0" expanded="false" />
+            <element signature="e#10989#11030#0" expanded="false" />
+            <element signature="n#!!block;n#TestPersist2#0" expanded="false" />
+            <element signature="e#11759#12480#0" expanded="false" />
+            <element signature="n#!!block;n#TestPersist3#0" expanded="false" />
+            <element signature="e#13177#13179#0" expanded="false" />
+            <element signature="n#!!block;n#TestFigure8#0" expanded="false" />
+            <element signature="e#13978#14595#0" expanded="false" />
+            <element signature="e#14026#14145#0" expanded="false" />
+            <element signature="e#14054#14141#0" expanded="false" />
+            <element signature="e#14113#14136#0" expanded="false" />
+            <element signature="e#14178#14309#0" expanded="false" />
+            <element signature="e#14315#14401#0" expanded="false" />
+            <element signature="e#14421#14460#0" expanded="false" />
+            <element signature="e#14475#14592#0" expanded="false" />
+            <element signature="e#14532#14588#0" expanded="false" />
+            <element signature="e#14627#14697#0" expanded="false" />
+            <element signature="e#14654#14694#0" expanded="false" />
+            <element signature="n#!!block;n#TestUnreliableAgree#0" expanded="false" />
+            <element signature="e#14988#15148#0" expanded="false" />
+            <element signature="e#15015#15125#0" expanded="false" />
+            <element signature="e#15055#15111#0" expanded="false" />
+            <element signature="n#!!block;n#TestFigure8Unreliable#0" expanded="false" />
+            <element signature="e#15499#16221#0" expanded="false" />
+            <element signature="e#15519#15555#0" expanded="false" />
+            <element signature="e#15602#15712#0" expanded="false" />
+            <element signature="e#15687#15708#0" expanded="false" />
+            <element signature="e#15745#15876#0" expanded="false" />
+            <element signature="e#15882#15968#0" expanded="false" />
+            <element signature="e#16055#16098#0" expanded="false" />
+            <element signature="e#16113#16218#0" expanded="false" />
+            <element signature="e#16176#16214#0" expanded="false" />
+            <element signature="e#16253#16312#0" expanded="false" />
+            <element signature="e#16286#16309#0" expanded="false" />
+            <element signature="n#!!block;n#internalChurn#0" expanded="false" />
+            <element signature="e#16452#16501#0" expanded="false" />
+            <element signature="e#16507#16545#0" expanded="false" />
+            <element signature="e#16712#17691#0" expanded="false" />
+            <element signature="e#16757#16770#0" expanded="false" />
+            <element signature="e#16828#17673#0" expanded="false" />
+            <element signature="e#16911#17146#0" expanded="false" />
+            <element signature="e#17042#17141#0" expanded="false" />
+            <element signature="e#17091#17135#0" expanded="false" />
+            <element signature="e#17156#17598#0" expanded="false" />
+            <element signature="e#17162#17211#0" expanded="false" />
+            <element signature="e#17271#17293#0" expanded="false" />
+            <element signature="e#17294#17593#0" expanded="false" />
+            <element signature="e#17349#17533#0" expanded="false" />
+            <element signature="e#17384#17457#0" expanded="false" />
+            <element signature="e#17404#17449#0" expanded="false" />
+            <element signature="e#17463#17514#0" expanded="false" />
+            <element signature="e#17604#17669#0" expanded="false" />
+            <element signature="e#17754#17816#0" expanded="false" />
+            <element signature="e#17855#18493#0" expanded="false" />
+            <element signature="e#17888#17943#0" expanded="false" />
+            <element signature="e#17976#18079#0" expanded="false" />
+            <element signature="e#18033#18057#0" expanded="false" />
+            <element signature="e#18112#18197#0" expanded="false" />
+            <element signature="e#18169#18193#0" expanded="false" />
+            <element signature="e#18201#18265#0" expanded="false" />
+            <element signature="e#18584#18653#0" expanded="false" />
+            <element signature="e#18611#18633#0" expanded="false" />
+            <element signature="e#18731#18834#0" expanded="false" />
+            <element signature="e#18765#18798#0" expanded="false" />
+            <element signature="e#18995#19136#0" expanded="false" />
+            <element signature="e#19060#19096#0" expanded="false" />
+            <element signature="e#19102#19133#0" expanded="false" />
+            <element signature="e#19165#19315#0" expanded="false" />
+            <element signature="e#19209#19250#0" expanded="false" />
+            <element signature="e#19226#19246#0" expanded="false" />
+            <element signature="e#19268#19312#0" expanded="false" />
+            <element signature="n#!!block;n#TestReliableChurn#0" expanded="false" />
+            <element signature="n#!!block;n#TestUnreliableChurn#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/persister.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="13" column="8" lean-forward="false" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="14" />
+          <folding>
+            <element signature="e#304#317#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/kvraft/config.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="39" column="9" lean-forward="false" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lockservice/client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="8" column="32" lean-forward="false" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
+          <folding>
+            <element signature="e#21#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/ProgramData/go/src/math/rand/rand.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="276" column="5" lean-forward="false" selection-start-line="276" selection-start-column="5" selection-end-line="276" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/labrpc/labrpc.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="80" column="20" lean-forward="false" selection-start-line="80" selection-start-column="20" selection-end-line="80" selection-end-column="20" />
+          <folding>
+            <element signature="e#2165#2295#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/ProgramData/go/src/time/time.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="619" column="5" lean-forward="false" selection-start-line="619" selection-start-column="5" selection-end-line="619" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/config.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1323">
+          <caret line="111" column="25" lean-forward="false" selection-start-line="111" selection-start-column="19" selection-end-line="111" selection-end-column="25" />
+          <folding>
+            <element signature="e#14#16#0" expanded="false" />
+            <element signature="n#!!block;n#randstring#0" expanded="false" />
+            <element signature="e#2343#2345#0" expanded="false" />
+            <element signature="e#3510#4442#0" expanded="false" />
+            <element signature="e#3549#3582#0" expanded="false" />
+            <element signature="e#3622#4165#0" expanded="false" />
+            <element signature="e#3681#3950#0" expanded="false" />
+            <element signature="e#3745#3944#0" expanded="false" />
+            <element signature="e#4079#4160#0" expanded="false" />
+            <element signature="e#4171#4252#0" expanded="false" />
+            <element signature="e#4274#4438#0" expanded="false" />
+            <element signature="e#4355#4409#0" expanded="false" />
+            <element signature="n#!!block;n#cleanup#0" expanded="false" />
+            <element signature="e#4724#4782#0" expanded="false" />
+            <element signature="e#4751#4779#0" expanded="false" />
+            <element signature="e#5633#5705#0" expanded="false" />
+            <element signature="n#!!block;n#rpcCount#0" expanded="false" />
+            <element signature="n#!!block;n#setunreliable#0" expanded="false" />
+            <element signature="n#!!block;n#setlongreordering#0" expanded="false" />
+            <element signature="n#!!block;n#checkTerms#0" expanded="false" />
+            <element signature="e#6851#7037#0" expanded="false" />
+            <element signature="e#6875#7034#0" expanded="false" />
+            <element signature="e#6933#6956#0" expanded="false" />
+            <element signature="e#6979#7030#0" expanded="false" />
+            <element signature="n#!!block;n#checkNoLeader#0" expanded="false" />
+            <element signature="e#7151#7319#0" expanded="false" />
+            <element signature="e#7175#7316#0" expanded="false" />
+            <element signature="e#7236#7312#0" expanded="false" />
+            <element signature="n#!!block;n#nCommitted#0" expanded="false" />
+            <element signature="e#7497#7808#0" expanded="false" />
+            <element signature="e#7526#7563#0" expanded="false" />
+            <element signature="e#7641#7805#0" expanded="false" />
+            <element signature="e#7674#7773#0" expanded="false" />
+            <element signature="e#7831#7872#0" expanded="false" />
+            <element signature="n#!!block;n#wait#0" expanded="false" />
+            <element signature="e#8037#8366#0" expanded="false" />
+            <element signature="e#8085#8099#0" expanded="false" />
+            <element signature="e#8139#8155#0" expanded="false" />
+            <element signature="e#8176#8363#0" expanded="false" />
+            <element signature="e#8209#8359#0" expanded="false" />
+            <element signature="e#8254#8354#0" expanded="false" />
+            <element signature="e#8261#8284#0" expanded="false" />
+            <element signature="e#8412#8493#0" expanded="false" />
+            <element signature="e#8509#8536#0" expanded="false" />
+            <element signature="e#9152#9185#0" expanded="false" />
+            <element signature="e#9268#9306#0" expanded="false" />
+            <element signature="e#9334#9776#0" expanded="false" />
+            <element signature="e#9339#9387#0" expanded="false" />
+            <element signature="e#9501#9772#0" expanded="false" />
+            <element signature="e#9580#9729#0" expanded="false" />
+            <element signature="e#9650#9723#0" expanded="false" />
+            <element signature="e#9782#9824#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1714">
+          <caret line="198" column="13" lean-forward="true" selection-start-line="198" selection-start-column="0" selection-end-line="199" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#16#0" expanded="false" />
+            <element signature="e#693#695#0" expanded="false" />
+            <element signature="e#911#1079#0" expanded="false" />
+            <element signature="e#1089#1133#0" expanded="false" />
+            <element signature="e#1156#1158#0" expanded="false" />
+            <element signature="e#1302#1347#0" expanded="false" />
+            <element signature="e#1458#1479#0" expanded="false" />
+            <element signature="e#2066#2111#0" expanded="false" />
+            <element signature="n#!!block;n#GetState#0" expanded="false" />
+            <element signature="n#!!block;n#getIdentification#0" expanded="false" />
+            <element signature="e#2467#2469#0" expanded="false" />
+            <element signature="n#!!block;n#persist#0" expanded="false" />
+            <element signature="e#2914#2916#0" expanded="false" />
+            <element signature="n#!!block;n#readPersist#0" expanded="false" />
+            <element signature="e#3183#3185#0" expanded="false" />
+            <element signature="e#3362#3364#0" expanded="false" />
+            <element signature="e#3434#3499#0" expanded="false" />
+            <element signature="e#3523#3543#0" expanded="false" />
+            <element signature="e#3568#3602#0" expanded="false" />
+            <element signature="e#3775#3777#0" expanded="false" />
+            <element signature="n#!!block;n#resetElectTimeOut#0" expanded="false" />
+            <element signature="n#!!block;n#resetHeartBeatTimeOut#0" expanded="false" />
+            <element signature="n#!!block;n#checkTerm#0" expanded="false" />
+            <element signature="e#4147#4316#0" expanded="false" />
+            <element signature="e#5548#5550#0" expanded="false" />
+            <element signature="n#!!block;n#sendAppendEntries#0" expanded="false" />
+            <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+            <element signature="e#6802#7190#0" expanded="false" />
+            <element signature="e#6827#6888#0" expanded="false" />
+            <element signature="e#6935#7167#0" expanded="false" />
+            <element signature="e#7103#7119#0" expanded="false" />
+            <element signature="e#7143#7163#0" expanded="false" />
+            <element signature="e#7194#7644#0" expanded="false" />
+            <element signature="e#7204#7480#0" expanded="false" />
+            <element signature="e#7286#7456#0" expanded="false" />
+            <element signature="e#7461#7480#0" expanded="false" />
+            <element signature="e#7482#7641#0" expanded="false" />
+            <element signature="e#7649#7651#0" expanded="false" />
+            <element signature="n#!!block;n#Start#0" expanded="false" />
+            <element signature="e#8384#8386#0" expanded="false" />
+            <element signature="n#!!block;n#Kill#0" expanded="false" />
+            <element signature="e#8663#8665#0" expanded="false" />
+            <element signature="n#!!block;n#timestamp#0" expanded="false" />
+            <element signature="n#!!block;n#selectAsLeader#0" expanded="false" />
+            <element signature="e#9336#9415#0" expanded="false" />
+            <element signature="e#9340#9412#0" expanded="false" />
+            <element signature="n#!!block;n#selectAsFollower#0" expanded="false" />
+            <element signature="n#!!block;n#selectAsCandidate#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>
