@@ -51,12 +51,12 @@ var verbose bool = true
 // A Go object implementing a single Raft peer.
 //
 const NOCANDIDATE int = -1
-const VOTETIMEOUTBASIC int = 1500
+const VOTETIMEOUTBASIC int = 150
 const HEARTBEATTIMEOUT int = 30
 const (
-	FOLLOWER = iota
-	CANDIDATE
-	LEADER
+	FOLLOWER  = 0
+	CANDIDATE = 1
+	LEADER    = 2
 )
 
 type Raft struct {
@@ -68,15 +68,16 @@ type Raft struct {
 	// Look at the paper's Figure 2 for a description of what
 	// state a Raft server must maintain.
 	//persistent state
-	currentTerm    int
-	votedFor       int
-	currentFollowr int
-	votesReceived  int
-	log            []Log
+	currentTerm int
+	votedFor    int
+
+	log []Log
 	//volatile state
 	commitIndex            int
 	lassApplied            int
 	identification         int
+	currentFollower        int
+	votesReceived          int
 	electTimeOut           <-chan time.Time
 	heartBeatTimeOut       <-chan time.Time
 	applyEntriesArgsChan   chan AppendEntriesTuple
@@ -102,11 +103,6 @@ func (rf *Raft) GetState() (int, bool) {
 	term = rf.currentTerm
 	isleader = rf.identification == LEADER
 	return term, isleader
-}
-func (rf *Raft) getIdentification() int {
-	rf.mu.Lock()
-	defer rf.mu.Unlock()
-	return rf.identification
 }
 
 //
@@ -174,12 +170,12 @@ type AppendEntriesReply struct {
 	Success bool
 }
 type RequestVoteTuple struct {
-	Request RequestVoteArgs
-	Reply   *RequestVoteReply
+	Request   RequestVoteArgs
+	ReplyChan chan RequestVoteReply
 }
 type AppendEntriesTuple struct {
-	Request AppendEntriesArgs
-	Reply   *AppendEntriesReply
+	Request   AppendEntriesArgs
+	ReplyChan chan AppendEntriesReply
 }
 
 //
@@ -202,7 +198,7 @@ func (rf *Raft) checkTerm(term int) bool {
 		if rf.identification != FOLLOWER {
 			rf.identification = FOLLOWER
 			rf.resetElectTimeOut()
-			rf.currentFollowr = 0
+			rf.currentFollower = 0
 			rf.votesReceived = 0
 			rf.heartBeatTimeOut = make(chan time.Time)
 			rf.print("converted to followers")
@@ -214,23 +210,25 @@ func (rf *Raft) checkTerm(term int) bool {
 }
 
 func (rf *Raft) AppendEntries(args AppendEntriesArgs, reply *AppendEntriesReply) {
-	rf.applyEntriesArgsChan <- AppendEntriesTuple{args, reply}
+	replyChan := make(chan AppendEntriesReply)
+	rf.applyEntriesArgsChan <- AppendEntriesTuple{args, replyChan}
+	*reply = <-replyChan
 }
 
 func (rf *Raft) RequestVote(args RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here.
-	rf.RequestVoteArgsChan <- RequestVoteTuple{args, reply}
+	replyChan := make(chan RequestVoteReply)
+	rf.RequestVoteArgsChan <- RequestVoteTuple{args, replyChan}
+	*reply = <-replyChan
 }
 
 func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
 	args := argsTuple.Request
-	reply := argsTuple.Reply
+	reply := RequestVoteReply{}
 	term, candidateId, _, _ := args.Term, args.CandidateId, args.LastLogIndex, args.LastLogTerm
 	msg := fmt.Sprintf("receiving vote Request from %d", candidateId)
 	rf.print(msg)
-	rf.checkTerm(term)
 	reply.VoteGranted = false
-	reply.Term = rf.currentTerm
 
 	if rf.identification == FOLLOWER { //only reply vote when at FOLLOWER state
 		if term > rf.currentTerm {
@@ -240,14 +238,20 @@ func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
 			rf.print(msg)
 			reply.VoteGranted = true
 		} else if term == rf.currentTerm && rf.votedFor == NOCANDIDATE {
-			//change vote when no candidate voted for
+			//change vote when no candidate voted for and a newer candidate request votes
 			rf.votedFor = candidateId
 			reply.VoteGranted = true
 			msg := fmt.Sprintf("vote for %d", candidateId)
 			rf.print(msg)
 		}
 
+	} else {
+		rf.print(fmt.Sprintf("i am not follower,ignore request"))
 	}
+	rf.checkTerm(term)
+	reply.Term = rf.currentTerm
+
+	argsTuple.ReplyChan <- reply
 }
 
 //
@@ -300,7 +304,7 @@ func (rf *Raft) startCampaign() {
 	rf.identification = CANDIDATE
 	rf.votedFor = rf.me
 	rf.votesReceived = 0
-	rf.currentFollowr = 1
+	rf.currentFollower = 1
 	rf.resetElectTimeOut()
 	args := RequestVoteArgs{rf.currentTerm, rf.me, len(rf.log), rf.log[len(rf.log)-1].term}
 	rf.print("converted to candidate")
@@ -377,9 +381,12 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 							//create applyentriesArgs
 							reply := &AppendEntriesReply{}
 
-							rf.print("sending Request")
+							rf.print("sending heartbeat")
 
-							rf.sendAppendEntries(index, args, reply)
+							ok := rf.sendAppendEntries(index, args, reply)
+							if !ok {
+								rf.print("heartbeat failed.")
+							}
 							rf.AppendEntriesReplyChan <- *reply
 
 						}(i)
@@ -392,7 +399,7 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 		case t := <-rf.AppendEntriesReplyChan:
 
 			rf.mu.Lock()
-			rf.print("receiving heartbeat reply")
+			rf.print(fmt.Sprintf("receiving heartbeat reply term : %d ", t.Term))
 			rf.checkTerm(t.Term)
 			rf.mu.Unlock()
 		case t := <-rf.applyEntriesArgsChan:
@@ -401,7 +408,7 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 				rf.resetElectTimeOut()
 			}
 			rf.print("checking according to heartbeat")
-			reply := t.Reply
+			reply := AppendEntriesReply{}
 			term := t.Request.Term
 			reply.Success = true
 			if term < rf.currentTerm {
@@ -411,7 +418,7 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 				rf.checkTerm(term)
 				reply.Term = rf.currentTerm
 			}
-
+			t.ReplyChan <- reply
 			rf.mu.Unlock()
 		case t := <-rf.RequestVoteArgsChan: //
 
@@ -427,20 +434,20 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 			rf.checkTerm(t.Term)
 
 			if rf.identification == CANDIDATE {
-				msg := fmt.Sprintf("handling reply. current follower :%d", rf.currentFollowr)
+				msg := fmt.Sprintf("handling reply. current follower :%d", rf.currentFollower)
 				rf.print(msg) //only react to voteReply when i am a candidate
 				if t.Term == rf.currentTerm {
 					rf.votesReceived += 1
 					//check vote result
 					if t.VoteGranted {
 						rf.print("+1 supporter")
-						rf.currentFollowr += 1
+						rf.currentFollower += 1
 					}
 				} else {
 					rf.print("outofDate vote reply received")
 
 				}
-				if rf.currentFollowr > len(rf.peers)/2 {
+				if rf.currentFollower > len(rf.peers)/2 {
 					//time to speak two poems
 
 					//change identification
@@ -449,9 +456,9 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 					rf.resetHeartBeatTimeOut()
 					//clear ElectionTimeout
 					rf.electTimeOut = make(chan time.Time)
-					msg := []rune("苟利国家生死以岂因祸福避趋之")[poemOrder%14]
-					poemOrder++
-					rf.print(string(msg))
+					//msg := []rune("苟利国家生死以岂因祸福避趋之")[poemOrder%14]
+					//poemOrder++
+					rf.print(fmt.Sprintf("i am not modest ,how can i be leader as a server"))
 
 				} else {
 					if rf.votesReceived == len(rf.peers)-1 {
@@ -466,9 +473,7 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 
 			rf.mu.Lock()
 			if rf.identification == FOLLOWER || rf.identification == CANDIDATE {
-
 				rf.startCampaign()
-
 			}
 			rf.mu.Unlock()
 
@@ -509,10 +514,10 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.AppendEntriesReplyChan = make(chan AppendEntriesReply, numpeer)
 	rf.applyEntriesArgsChan = make(chan AppendEntriesTuple)
 	rf.RequestVoteArgsChan = make(chan RequestVoteTuple)
-	rf.RequestVoteReplyChan = make(chan RequestVoteReply)
-	go rf.mainloop(applyCh)
+	rf.RequestVoteReplyChan = make(chan RequestVoteReply, numpeer)
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
+	go rf.mainloop(applyCh)
 
 	return rf
 }
