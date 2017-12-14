@@ -167,8 +167,10 @@ type AppendEntriesArgs struct {
 	leaderCommit int
 }
 type AppendEntriesReply struct {
-	Term    int
-	Success bool
+	Term               int
+	Success            bool
+	conflictEntryTerm  int
+	conflictEntryIndex int
 }
 type AppendEntriesReplyTuple struct {
 	reply AppendEntriesReply
@@ -409,31 +411,29 @@ func (rf *Raft) heartBeat() {
 	log := rf.log[len(rf.log)-1]
 	args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.term, []Log{}, rf.commitIndex}
 	for i := 0; i < len(rf.peers); i++ {
-		if i != rf.me {
-			//if i am Leader ,send heartbeat
-			go func(index int) {
-				//create applyentriesArgs
-				reply := &AppendEntriesReply{}
 
-				rf.print("sending heartbeat")
+		//if i am Leader ,send heartbeat
+		go func(index int) {
+			//create applyentriesArgs
+			reply := &AppendEntriesReply{}
 
-				ok := rf.sendAppendEntries(index, args, reply)
-				if !ok {
-					rf.print("heartbeat failed.")
-				}
-				replyPeer := AppendEntriesReplyTuple{*reply, i}
+			rf.print(fmt.Sprintf("sending heartbeat to %d", index))
 
-				rf.AppendEntriesReplyChan <- replyPeer
+			ok := rf.sendAppendEntries(index, args, reply)
+			if !ok {
+				rf.print("heartbeat failed.")
+			}
+			replyPeer := AppendEntriesReplyTuple{*reply, index}
 
-			}(i)
-		}
+			rf.AppendEntriesReplyChan <- replyPeer
+
+		}(i)
+
 	}
 	//reset heartbeatTimeOut
 	rf.resetHeartBeatTimeOut()
 }
-func (rf *Raft) checkLogIfLeading(lastLogIndex int, peer int) {
 
-}
 func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 
 	rf.print("checking according to heartbeat")
@@ -447,6 +447,14 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 	converted := rf.checkTerm(term)
 	if len(rf.log)-1 < index || rf.log[index].term != Logterm {
 		reply.Success = false
+		//inform the leader of the first conflicting entries with the same term
+		for i := index; i >= 0; i-- {
+			if rf.log[i-1].term != rf.log[index].term {
+				reply.conflictEntryTerm = rf.log[index].term
+				reply.conflictEntryIndex = i
+				break
+			}
+		}
 	} else {
 		if term < rf.currentTerm {
 			reply.Success = false
@@ -479,7 +487,39 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 
 	t.ReplyChan <- reply
 }
+func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
+	rf.checkTerm(t.reply.Term)
+	if rf.identification == LEADER {
+		if !t.reply.Success {
 
+			index2send := t.reply.conflictEntryIndex
+			log := rf.log[index2send]
+
+			entries := rf.log[index2send:]
+			args := AppendEntriesArgs{rf.currentTerm, rf.me, index2send - 1, log.term, entries, rf.commitIndex}
+			go func() {
+				reply := &AppendEntriesReply{}
+
+				rf.print(fmt.Sprintf("sending logs to help peer %d updating", t.peer))
+				ok := rf.sendAppendEntries(t.peer, args, reply)
+				if !ok {
+					rf.print("sending log  failed.")
+				}
+				replyPeer := AppendEntriesReplyTuple{*reply, t.peer}
+
+				rf.AppendEntriesReplyChan <- replyPeer
+
+			}()
+		} else {
+			rf.print("updating index and next index")
+			//update next index for peer
+			rf.nextIndex[t.peer] = len(rf.log)
+			rf.matchIndex[t.peer] = len(rf.log) - 1 //?
+			//update match index for peer
+		}
+	}
+
+}
 func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 	//check Term
 	rf.checkTerm(t.Term)
@@ -531,13 +571,30 @@ func (rf *Raft) initIndex() {
 		rf.nextIndex[i] = len(rf.log)
 	}
 }
-func (rf *Raft) checkLog(applyCh chan ApplyMsg) {
-	if rf.commitIndex > rf.lassApplied {
+func (rf *Raft) checkLog() {
+	if rf.identification == LEADER {
+		//check agreement made
+
+		for i := rf.lassApplied + 1; ; i++ {
+			numagree := 0
+			for j := 1; j < len(rf.peers); j++ {
+				if rf.matchIndex[j] >= i && rf.log[i].term == rf.currentTerm {
+					numagree += 1
+				}
+			}
+			if numagree <= len(rf.peers)/2 {
+				break
+			} else {
+				rf.commitIndex = i
+			}
+		}
+	}
+	for rf.commitIndex > rf.lassApplied {
 		rf.lassApplied += 1
-		applyCh <- ApplyMsg{rf.lassApplied, rf.log[rf.lassApplied].Command, false, []byte{}}
+		rf.ApplyMsgChan <- ApplyMsg{rf.lassApplied, rf.log[rf.lassApplied].Command, false, []byte{}}
 	}
 }
-func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
+func (rf *Raft) mainloop() {
 	//wait until time
 	for {
 		select {
@@ -546,6 +603,7 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 			rf.print("time to heartbeat")
 
 			rf.mu.Lock()
+			rf.checkLog()
 			if rf.identification == LEADER {
 				rf.heartBeat()
 			}
@@ -553,30 +611,33 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 		case t := <-rf.AppendEntriesReplyChan:
 
 			rf.mu.Lock()
+			rf.checkLog()
 			rf.print(fmt.Sprintf("receiving heartbeat reply term : %d ", t.reply.Term))
-			rf.checkTerm(t.reply.Term)
+			rf.HandleResponseApplyEntries(t)
 			rf.mu.Unlock()
 		case t := <-rf.applyEntriesArgsChan: //receive apply entries rpc
 			rf.persist() //persist before respond to rpc
 
 			rf.mu.Lock()
-			rf.checkLog(applyCh)
+			rf.checkLog()
 			rf.HandleApplyEntries(t)
 			rf.mu.Unlock()
 		case t := <-rf.RequestVoteArgsChan: //
 			rf.persist() //persist before respond to rpc
 			rf.mu.Lock()
-			rf.checkLog(applyCh)
+			rf.checkLog()
 			rf.HandleRequestVote(t)
 			rf.mu.Unlock()
 			//check his log if ia m leader
 
 		case t := <-rf.RequestVoteReplyChan: //receive num voters
 			rf.mu.Lock()
+			rf.checkLog()
 			rf.HandleResponseVote(t)
 			rf.mu.Unlock()
 		case <-rf.electTimeOut: //start campaign when i am a follower or candidate
 			rf.mu.Lock()
+			rf.checkLog()
 			if rf.identification == FOLLOWER || rf.identification == CANDIDATE {
 				rf.startCampaign()
 			}
@@ -624,7 +685,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	//rf.CancelCampaignChan = make(chan int)
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
-	go rf.mainloop(applyCh)
+	go rf.mainloop()
 
 	return rf
 }

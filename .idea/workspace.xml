@@ -37,11 +37,21 @@
       <file leaf-file-name="raft.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1466">
-              <caret line="391" column="2" lean-forward="false" selection-start-line="391" selection-start-column="2" selection-end-line="391" selection-end-column="2" />
+            <state relative-caret-position="209">
+              <caret line="318" column="10" lean-forward="false" selection-start-line="318" selection-start-column="0" selection-end-line="319" selection-end-column="0" />
               <folding>
                 <element signature="e#591#691#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="panic.go" pinned="false" current-in-tab="false">
+        <entry file="file://D:/ProgramData/go/src/runtime/panic.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="162">
+              <caret line="576" column="0" lean-forward="false" selection-start-line="576" selection-start-column="0" selection-end-line="576" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -444,27 +454,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestInitialElection_in_test_test_go - 2017.12.14 at 13h 24m 28s.xml">
-      <configuration name="TestInitialElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestInitialElection_in_test_test_go - 2017.12.14 at 13h 25m 45s.xml">
-      <configuration name="TestInitialElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 12h 39m 12s.xml">
-      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 12h 39m 14s.xml">
-      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 13h 24m 07s.xml">
-      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 13h 25m 54s.xml">
-      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 13h 44m 24s.xml">
-      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
     <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 14h 05m 39s.xml">
       <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
@@ -472,6 +461,27 @@
       <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
     <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 16h 01m 19s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 18h 27m 10s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 18h 27m 24s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 18h 34m 20s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 18h 37m 32s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 18h 37m 57s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 18h 38m 53s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 18h 39m 11s.xml">
       <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
   </component>
@@ -489,11 +499,11 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32159624" sideWeight="0.49785867" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298122" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.59624416" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5957697" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39906102" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39952996" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -530,22 +540,24 @@
     <MESSAGE value="add  log check and check already vote in handling request vote" />
     <MESSAGE value="add log operations in response to appendEntries" />
     <MESSAGE value="fix bugs of not sending heartbeat upon election" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix bugs of not sending heartbeat upon election" />
+    <MESSAGE value="make leader know the server who sends reply" />
+    <option name="LAST_COMMIT_MESSAGE" value="make leader know the server who sends reply" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="42" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/src/raft/raft.go</url>
+          <line>515</line>
+          <properties />
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="50" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/raft/util.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/labrpc/test_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-5520">
@@ -999,10 +1011,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://D:/ProgramData/go/src/runtime/panic.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="576" column="0" lean-forward="false" selection-start-line="576" selection-start-column="0" selection-end-line="576" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1466">
-          <caret line="391" column="2" lean-forward="false" selection-start-line="391" selection-start-column="2" selection-end-line="391" selection-end-column="2" />
+        <state relative-caret-position="209">
+          <caret line="318" column="10" lean-forward="false" selection-start-line="318" selection-start-column="0" selection-end-line="319" selection-end-column="0" />
           <folding>
             <element signature="e#591#691#0" expanded="true" />
           </folding>
