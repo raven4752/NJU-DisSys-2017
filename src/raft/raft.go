@@ -162,7 +162,7 @@ type AppendEntriesArgs struct {
 	Leader       int
 	prevLogIndex int
 	prevLogTerm  int
-	entries      []int
+	entries      []Log
 	leaderCommit int
 }
 type AppendEntriesReply struct {
@@ -355,8 +355,12 @@ func (rf *Raft) startCampaign() {
 func (rf *Raft) Start(command interface{}) (int, int, bool) {
 	index := -1
 	term := -1
-	isLeader := true
-
+	isLeader := rf.identification == LEADER
+	if !isLeader {
+		return index, term, isLeader
+	} else {
+		//start agreement
+	}
 	return index, term, isLeader
 }
 
@@ -373,7 +377,7 @@ func (rf *Raft) Kill() {
 
 func (rf *Raft) heartBeat() {
 	log := rf.log[len(rf.log)-1]
-	args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.term, []int{}, rf.commitIndex}
+	args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.term, []Log{}, rf.commitIndex}
 	for i := 0; i < len(rf.peers); i++ {
 		if i != rf.me {
 			//if i am Leader ,send heartbeat
@@ -401,17 +405,41 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 	rf.print("checking according to heartbeat")
 	reply := AppendEntriesReply{}
 	term := t.Request.Term
+	index := t.Request.prevLogIndex
+	Logterm := t.Request.prevLogTerm
+	entries := t.Request.entries
+	leaderCommit := t.Request.leaderCommit
 	reply.Success = true
-	if term < rf.currentTerm {
+	if len(rf.log)-1 < index || rf.log[index].term != Logterm {
 		reply.Success = false
-		reply.Term = rf.currentTerm
 	} else {
-		converted := rf.checkTerm(term)
-		if rf.identification == FOLLOWER && !converted { //cancel election plan
+		if term < rf.currentTerm {
+			reply.Success = false
+			reply.Term = rf.currentTerm
+		} else {
+			for i := index + 1; i < len(rf.log); i++ {
+				if rf.log[i].term != entries[i-index-1].term {
+					//pop all log starting from i and break
+					rf.log = rf.log[0:i]
+					break
+				}
+			}
+			rf.log = append(rf.log, entries...) //sweet!
+			//update commit index
+			if leaderCommit > rf.commitIndex {
+				if leaderCommit > len(rf.log)-1 {
+					rf.commitIndex = len(rf.log) - 1
+				} else {
+					rf.commitIndex = leaderCommit
+				}
+			}
+			converted := rf.checkTerm(term)
+			if rf.identification == FOLLOWER && !converted { //cancel election plan
 
-			rf.resetElectTimeOut()
+				rf.resetElectTimeOut()
+			}
+			reply.Term = rf.currentTerm
 		}
-		reply.Term = rf.currentTerm
 	}
 	t.ReplyChan <- reply
 }
