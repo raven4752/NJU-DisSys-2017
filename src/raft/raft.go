@@ -12,7 +12,7 @@ package raft
 // rf.GetState() (Term, isLeader)
 //   ask a Raft for its current Term, and whether it thinks it is Leader
 // ApplyMsg
-//   each time a new entry is committed to the log, each Raft peer
+//   each time a new entry is committed to the log, each Raft Peer
 //   should send an ApplyMsg to the service (or tester)
 //   in the same server.
 //
@@ -29,8 +29,8 @@ import (
 )
 
 //
-// as each Raft peer becomes aware that successive log entries are
-// committed, the peer should send an ApplyMsg to the service (or
+// as each Raft Peer becomes aware that successive log Entries are
+// committed, the Peer should send an ApplyMsg to the service (or
 // tester) on the same server, via the applyCh passed to Make().
 //
 type ApplyMsg struct {
@@ -40,14 +40,14 @@ type ApplyMsg struct {
 	Snapshot    []byte // ignore for lab2; only used in lab3
 }
 type Log struct {
-	term    int
+	Term    int
 	Command interface{}
 }
 
 var verbose bool = true
 
 //
-// A Go object implementing a single Raft peer.
+// A Go object implementing a single Raft Peer.
 //
 const NOCANDIDATE int = -1
 const VOTETIMEOUTBASIC int = 150
@@ -90,6 +90,7 @@ type Raft struct {
 	RequestVoteArgsChan    chan RequestVoteTuple
 	RequestVoteReplyChan   chan RequestVoteReply
 	ApplyMsgChan           chan ApplyMsg
+	ApplyMsgNotifyChan     chan int //chan used to block client call return
 }
 
 // return currentTerm and whether this server
@@ -151,7 +152,7 @@ type RequestVoteArgs struct {
 }
 
 //
-// example RequestVote RPC reply structure.
+// example RequestVote RPC Reply structure.
 //
 type RequestVoteReply struct {
 	// Your data here.
@@ -161,20 +162,20 @@ type RequestVoteReply struct {
 type AppendEntriesArgs struct {
 	Term         int
 	Leader       int
-	prevLogIndex int
-	prevLogTerm  int
-	entries      []Log
-	leaderCommit int
+	PrevLogIndex int
+	PrevLogTerm  int
+	Entries      []Log
+	LeaderCommit int
 }
 type AppendEntriesReply struct {
 	Term               int
 	Success            bool
-	conflictEntryTerm  int
-	conflictEntryIndex int
+	ConflictEntryTerm  int
+	ConflictEntryIndex int
 }
 type AppendEntriesReplyTuple struct {
-	reply AppendEntriesReply
-	peer  int
+	Reply AppendEntriesReply
+	Peer  int
 }
 type RequestVoteTuple struct {
 	Request   RequestVoteArgs
@@ -190,7 +191,7 @@ type AppendEntriesTuple struct {
 //
 func (rf *Raft) resetElectTimeOut() {
 	D := time.Duration((rand.Intn(VOTETIMEOUTBASIC) + VOTETIMEOUTBASIC) * int(time.Millisecond))
-	rf.print(fmt.Sprintf("resetting electionTimeOut to %d ms", D.Nanoseconds()/int64(time.Millisecond)))
+	//rf.print(fmt.Sprintf("resetting electionTimeOut to %d ms", D.Nanoseconds()/int64(time.Millisecond)))
 	rf.electTimeOut = time.After(D)
 }
 func (rf *Raft) resetHeartBeatTimeOut() {
@@ -238,10 +239,10 @@ func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
 	reply.VoteGranted = false
 	converted := rf.checkTerm(term)
 
-	if rf.identification == FOLLOWER { //only reply vote when at FOLLOWER state
+	if rf.identification == FOLLOWER { //only Reply vote when at FOLLOWER state
 		if rf.votedFor == candidateId {
 			reply.VoteGranted = true
-		} else if logindex >= len(rf.log)-1 && logterm >= rf.log[len(rf.log)-1].term {
+		} else if logindex >= len(rf.log)-1 && logterm >= rf.log[len(rf.log)-1].Term {
 
 			if converted {
 				//change my vote when staled
@@ -270,9 +271,9 @@ func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
 // example code to send a RequestVote RPC to a server.
 // server is the index of the target server in rf.peers[].
 // expects RPC arguments in args.
-// fills in *reply with RPC Reply, so caller should
-// pass &reply.
-// the types of the args and reply passed to Call() must be
+// fills in *Reply with RPC Reply, so caller should
+// pass &Reply.
+// the types of the args and Reply passed to Call() must be
 // the same as the types of the arguments declared in the
 // handler function (including whether they are pointers).
 //
@@ -280,7 +281,7 @@ func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
 //
 // if you're having trouble getting RPC to work, check that you've
 // capitalized all field names in structs passed over RPC, and
-// that the caller passes the address of the reply struct with &, not
+// that the caller passes the address of the Reply struct with &, not
 // the struct itself.
 //
 func (rf *Raft) sendRequestVote(server int, args RequestVoteArgs, reply *RequestVoteReply) bool {
@@ -318,19 +319,19 @@ func (rf *Raft) startCampaign() {
 	rf.votesReceived = 0
 	rf.currentFollower = 1
 	rf.resetElectTimeOut()
-	args := RequestVoteArgs{rf.currentTerm, rf.me, len(rf.log), rf.log[len(rf.log)-1].term}
+	args := RequestVoteArgs{rf.currentTerm, rf.me, len(rf.log), rf.log[len(rf.log)-1].Term}
 	rf.print("converted to candidate")
 	for i := 0; i < len(rf.peers); i++ {
 		if i != rf.me {
 			go func(index int, replyChan chan RequestVoteReply) {
 				rf.print(fmt.Sprintf("sending Request to %d", index))
-				//reply := <-rf.RequestVoteReplyChan
+				//Reply := <-rf.RequestVoteReplyChan
 				reply := RequestVoteReply{}
 				ok := rf.sendRequestVote(index, args, &reply)
 				if ok {
 					rf.print(fmt.Sprintf("rpc call Success %d", index))
 				} else {
-					//set reply to term to notify network fail
+					//set Reply to Term to notify network fail
 					reply.Term = rf.currentTerm
 					rf.print(fmt.Sprintf("rpc call failed %d", index))
 				}
@@ -338,7 +339,7 @@ func (rf *Raft) startCampaign() {
 					rf.print(fmt.Sprintf("receive support %d", index))
 				}
 				replyChan <- reply
-				rf.print("write reply to channel ")
+				rf.print("write Reply to channel ")
 
 			}(i, rf.RequestVoteReplyChan)
 		}
@@ -359,42 +360,6 @@ func (rf *Raft) startCampaign() {
 // Term. the third return value is true if this server believes it is
 // the Leader.
 //
-func (rf *Raft) Start(command interface{}) (int, int, bool) {
-	index := len(rf.log)
-	term := rf.currentTerm
-	isLeader := rf.identification == LEADER
-	if !isLeader {
-		return index, term, isLeader
-	} else {
-		log := rf.log[len(rf.log)-1]
-		//add log to local log
-		newlog := Log{rf.currentTerm, command}
-		args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.term, []Log{newlog}, rf.commitIndex}
-		for i := 0; i < len(rf.peers); i++ {
-			if i != rf.me {
-				//if i am Leader ,send heartbeat
-				go func(index int) {
-					//create applyentriesArgs
-					reply := &AppendEntriesReply{}
-
-					rf.print("sending heartbeat")
-
-					ok := rf.sendAppendEntries(index, args, reply)
-					if !ok {
-						rf.print("heartbeat failed.")
-					}
-					replyPeer := AppendEntriesReplyTuple{*reply, i}
-					rf.AppendEntriesReplyChan <- replyPeer
-
-				}(i)
-			}
-		}
-		//start agreement
-	}
-_:
-	<-rf.ApplyMsgChan
-	return index, term, isLeader
-}
 
 //
 // the tester calls Kill() when a Raft instance won't
@@ -409,7 +374,7 @@ func (rf *Raft) Kill() {
 
 func (rf *Raft) heartBeat() {
 	log := rf.log[len(rf.log)-1]
-	args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.term, []Log{}, rf.commitIndex}
+	args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.Term, []Log{}, rf.commitIndex}
 	for i := 0; i < len(rf.peers); i++ {
 
 		//if i am Leader ,send heartbeat
@@ -417,7 +382,7 @@ func (rf *Raft) heartBeat() {
 			//create applyentriesArgs
 			reply := &AppendEntriesReply{}
 
-			rf.print(fmt.Sprintf("sending heartbeat to %d", index))
+			//rf.print(fmt.Sprintf("sending heartbeat to %d", index))
 
 			ok := rf.sendAppendEntries(index, args, reply)
 			if !ok {
@@ -435,46 +400,63 @@ func (rf *Raft) heartBeat() {
 }
 
 func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
+	if len(t.Request.Entries) == 0 {
+		//rf.print("checking according to heartbeat")
 
-	rf.print("checking according to heartbeat")
+	} else {
+		rf.print("receiving appendentries call")
+	}
 	reply := AppendEntriesReply{}
 	term := t.Request.Term
-	index := t.Request.prevLogIndex
-	Logterm := t.Request.prevLogTerm
-	entries := t.Request.entries
-	leaderCommit := t.Request.leaderCommit
+	index := t.Request.PrevLogIndex
+	Logterm := t.Request.PrevLogTerm
+	entries := t.Request.Entries
+	leaderCommit := t.Request.LeaderCommit
 	reply.Success = true
 	converted := rf.checkTerm(term)
-	if len(rf.log)-1 < index || rf.log[index].term != Logterm {
+	if len(rf.log)-1 < index || rf.log[index].Term != Logterm {
 		reply.Success = false
-		//inform the leader of the first conflicting entries with the same term
-		for i := index; i >= 0; i-- {
-			if rf.log[i-1].term != rf.log[index].term {
-				reply.conflictEntryTerm = rf.log[index].term
-				reply.conflictEntryIndex = i
-				break
+		//inform the leader of the first conflicting Entries with the same Term
+		if len(rf.log)-1 >= index {
+			for i := len(rf.log); i >= 0; i-- {
+				if rf.log[i-1].Term != rf.log[index].Term {
+					reply.ConflictEntryTerm = rf.log[index].Term
+					reply.ConflictEntryIndex = i
+					break
+				}
 			}
+		} else {
+			reply.ConflictEntryIndex = len(rf.log)
+			reply.ConflictEntryTerm = Logterm
 		}
+		rf.print(fmt.Sprintf("request logs from %d", reply.ConflictEntryIndex))
 	} else {
 		if term < rf.currentTerm {
 			reply.Success = false
 			reply.Term = rf.currentTerm
+			rf.print("rejected due to low Term")
 		} else {
-			for i := index + 1; i < len(rf.log); i++ {
-				if rf.log[i].term != entries[i-index-1].term {
-					//pop all log starting from i and break
-					rf.log = rf.log[0:i]
-					break
+			if len(entries) > 0 {
+				for i := index + 1; i < len(rf.log); i++ {
+					if rf.log[i-1].Term != entries[i-index-1].Term {
+						//pop all log starting from i and break
+						rf.log = rf.log[0:i]
+						break
+					}
 				}
+				rf.log = append(rf.log, entries...) //sweet!
+				//update commit index
+				rf.print(fmt.Sprintf("log appended current index: %d", len(rf.log)-1))
 			}
-			rf.log = append(rf.log, entries...) //sweet!
-			//update commit index
+
 			if leaderCommit > rf.commitIndex {
 				if leaderCommit > len(rf.log)-1 {
 					rf.commitIndex = len(rf.log) - 1
 				} else {
 					rf.commitIndex = leaderCommit
 				}
+				rf.print(fmt.Sprintf("update commit index to %d", rf.commitIndex))
+
 			}
 			if rf.identification == FOLLOWER && !converted { //cancel election plan
 
@@ -488,34 +470,37 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 	t.ReplyChan <- reply
 }
 func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
-	rf.checkTerm(t.reply.Term)
+	rf.checkTerm(t.Reply.Term)
 	if rf.identification == LEADER {
-		if !t.reply.Success {
+		if !t.Reply.Success {
 
-			index2send := t.reply.conflictEntryIndex
-			log := rf.log[index2send]
+			index2send := t.Reply.ConflictEntryIndex
+			log := rf.log[index2send-1]
 
 			entries := rf.log[index2send:]
-			args := AppendEntriesArgs{rf.currentTerm, rf.me, index2send - 1, log.term, entries, rf.commitIndex}
+			args := AppendEntriesArgs{rf.currentTerm, rf.me, index2send - 1, log.Term, entries, rf.commitIndex}
 			go func() {
 				reply := &AppendEntriesReply{}
 
-				rf.print(fmt.Sprintf("sending logs to help peer %d updating", t.peer))
-				ok := rf.sendAppendEntries(t.peer, args, reply)
+				rf.print(fmt.Sprintf("sending logs starting from %d to help Peer %d updating", index2send, t.Peer))
+				ok := rf.sendAppendEntries(t.Peer, args, reply)
 				if !ok {
 					rf.print("sending log  failed.")
 				}
-				replyPeer := AppendEntriesReplyTuple{*reply, t.peer}
+				replyPeer := AppendEntriesReplyTuple{*reply, t.Peer}
 
 				rf.AppendEntriesReplyChan <- replyPeer
 
 			}()
 		} else {
-			rf.print("updating index and next index")
-			//update next index for peer
-			rf.nextIndex[t.peer] = len(rf.log)
-			rf.matchIndex[t.peer] = len(rf.log) - 1 //?
-			//update match index for peer
+			if rf.matchIndex[t.Peer] != len(rf.log)-1 {
+				rf.print(fmt.Sprintf("updating Peer %d 's match index to %d", t.Peer, len(rf.log)-1))
+
+			}
+			//update next index for Peer
+			rf.nextIndex[t.Peer] = len(rf.log)
+			rf.matchIndex[t.Peer] = len(rf.log) - 1 //?
+			//update match index for Peer
 		}
 	}
 
@@ -525,7 +510,7 @@ func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 	rf.checkTerm(t.Term)
 
 	if rf.identification == CANDIDATE {
-		msg := fmt.Sprintf("handling reply. current follower :%d", rf.currentFollower)
+		msg := fmt.Sprintf("handling Reply. current follower :%d", rf.currentFollower)
 		rf.print(msg) //only react to voteReply when i am a candidate
 		if t.Term == rf.currentTerm {
 			rf.votesReceived += 1
@@ -535,7 +520,7 @@ func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 				rf.currentFollower += 1
 			}
 		} else {
-			rf.print("outofDate vote reply received")
+			rf.print("outofDate vote Reply received")
 
 		}
 		if rf.currentFollower > len(rf.peers)/2 {
@@ -555,7 +540,7 @@ func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 			rf.print(fmt.Sprintf("i am not too modest ,how can i be a leader as a server"))
 
 			if rf.votesReceived == len(rf.peers)-1 {
-				rf.print(fmt.Sprintf("electionfailed"))
+				rf.print(fmt.Sprintf("i think i should apply for professor"))
 				//campaign failed,wait
 				rf.resetElectTimeOut()
 				//kill all sones
@@ -571,27 +556,76 @@ func (rf *Raft) initIndex() {
 		rf.nextIndex[i] = len(rf.log)
 	}
 }
+func (rf *Raft) Start(command interface{}) (int, int, bool) {
+	index := len(rf.log)
+	term := rf.currentTerm
+	isLeader := rf.identification == LEADER
+	rf.print("receive client call")
+	if !isLeader {
+		return index, term, isLeader
+	} else {
+		log := rf.log[len(rf.log)-1]
+		newlog := Log{rf.currentTerm, command}
+		args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.Term, []Log{newlog}, rf.commitIndex}
+		//add log to local log
+		//rf.log = append(rf.log, newlog)
+		for i := 0; i < len(rf.peers); i++ {
+			{
+				//if i am Leader ,send applyentries
+				go func(index int, args AppendEntriesArgs) {
+					//create applyentriesArgs
+					reply := &AppendEntriesReply{}
+
+					rf.print(fmt.Sprintf("sending append Entries with log len %d", len(args.Entries)))
+
+					ok := rf.sendAppendEntries(index, args, reply)
+					if !ok {
+						rf.print("append Entries failed.")
+					}
+					replyPeer := AppendEntriesReplyTuple{*reply, index}
+					rf.AppendEntriesReplyChan <- replyPeer
+
+				}(i, args)
+			}
+		}
+		//start agreement
+	_:
+		<-rf.ApplyMsgNotifyChan
+	}
+	rf.print(fmt.Sprintf("**********return to client with index %d***********", index))
+	return index, term, isLeader
+}
+
 func (rf *Raft) checkLog() {
 	if rf.identification == LEADER {
 		//check agreement made
 
-		for i := rf.lassApplied + 1; ; i++ {
+		for i := rf.commitIndex + 1; i < len(rf.log); i++ {
 			numagree := 0
+			if rf.log[i].Term != rf.currentTerm {
+				rf.print(fmt.Sprintf("rejected commit index to be %d due to Term %d", i, rf.log[i].Term))
+			}
 			for j := 1; j < len(rf.peers); j++ {
-				if rf.matchIndex[j] >= i && rf.log[i].term == rf.currentTerm {
+				if rf.matchIndex[j] >= i {
 					numagree += 1
 				}
 			}
-			if numagree <= len(rf.peers)/2 {
-				break
-			} else {
+
+			if numagree > len(rf.peers)/2 && rf.log[i].Term == rf.currentTerm {
 				rf.commitIndex = i
+				rf.print(fmt.Sprintf("update commit index to %d", rf.commitIndex))
 			}
 		}
 	}
-	for rf.commitIndex > rf.lassApplied {
+	if rf.commitIndex > rf.lassApplied {
 		rf.lassApplied += 1
 		rf.ApplyMsgChan <- ApplyMsg{rf.lassApplied, rf.log[rf.lassApplied].Command, false, []byte{}}
+
+		if rf.identification == LEADER { //notify return client call
+			rf.ApplyMsgNotifyChan <- 0
+		}
+		rf.print("apply msg")
+
 	}
 }
 func (rf *Raft) mainloop() {
@@ -600,7 +634,7 @@ func (rf *Raft) mainloop() {
 		select {
 		case <-rf.heartBeatTimeOut: //send heartbeart if is Leader
 
-			rf.print("time to heartbeat")
+			//rf.print("time to heartbeat")
 
 			rf.mu.Lock()
 			rf.checkLog()
@@ -612,10 +646,10 @@ func (rf *Raft) mainloop() {
 
 			rf.mu.Lock()
 			rf.checkLog()
-			rf.print(fmt.Sprintf("receiving heartbeat reply term : %d ", t.reply.Term))
+			//rf.print(fmt.Sprintf("receiving heartbeat Reply Term : %d ", t.Reply.Term))
 			rf.HandleResponseApplyEntries(t)
 			rf.mu.Unlock()
-		case t := <-rf.applyEntriesArgsChan: //receive apply entries rpc
+		case t := <-rf.applyEntriesArgsChan: //receive apply Entries rpc
 			rf.persist() //persist before respond to rpc
 
 			rf.mu.Lock()
@@ -682,6 +716,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.RequestVoteArgsChan = make(chan RequestVoteTuple)
 	rf.RequestVoteReplyChan = make(chan RequestVoteReply, numpeer)
 	rf.ApplyMsgChan = applyCh
+	rf.ApplyMsgNotifyChan = make(chan int)
 	//rf.CancelCampaignChan = make(chan int)
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
