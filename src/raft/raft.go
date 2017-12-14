@@ -225,25 +225,30 @@ func (rf *Raft) RequestVote(args RequestVoteArgs, reply *RequestVoteReply) {
 func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
 	args := argsTuple.Request
 	reply := RequestVoteReply{}
-	term, candidateId, _, _ := args.Term, args.CandidateId, args.LastLogIndex, args.LastLogTerm
+	term, candidateId, logindex, logterm := args.Term, args.CandidateId, args.LastLogIndex, args.LastLogTerm
 	msg := fmt.Sprintf("receiving vote Request from %d", candidateId)
 	rf.print(msg)
 	reply.VoteGranted = false
 	converted := rf.checkTerm(term)
 
 	if rf.identification == FOLLOWER { //only reply vote when at FOLLOWER state
-		if converted {
-			//change my vote when staled
-			rf.votedFor = candidateId
-			msg := fmt.Sprintf("vote for %d", candidateId)
-			rf.print(msg)
+		if rf.votedFor == candidateId {
 			reply.VoteGranted = true
-		} else if term == rf.currentTerm && rf.votedFor == NOCANDIDATE {
-			//change vote when no candidate voted for and a newer candidate request votes
-			rf.votedFor = candidateId
-			reply.VoteGranted = true
-			msg := fmt.Sprintf("vote for %d", candidateId)
-			rf.print(msg)
+		} else if logindex >= len(rf.log)-1 && logterm >= rf.log[len(rf.log)-1].term {
+
+			if converted {
+				//change my vote when staled
+				rf.votedFor = candidateId
+				msg := fmt.Sprintf("vote for %d", candidateId)
+				rf.print(msg)
+				reply.VoteGranted = true
+			} else if term == rf.currentTerm && rf.votedFor == NOCANDIDATE {
+				//change vote when no candidate voted for and a newer candidate request votes
+				rf.votedFor = candidateId
+				reply.VoteGranted = true
+				msg := fmt.Sprintf("vote for %d", candidateId)
+				rf.print(msg)
+			}
 		}
 
 	} else {
