@@ -37,11 +37,10 @@
       <file leaf-file-name="raft.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="112">
-              <caret line="239" column="26" lean-forward="true" selection-start-line="239" selection-start-column="26" selection-end-line="239" selection-end-column="26" />
+            <state relative-caret-position="342">
+              <caret line="468" column="0" lean-forward="true" selection-start-line="468" selection-start-column="0" selection-end-line="468" selection-end-column="0" />
               <folding>
-                <element signature="e#591#721#0" expanded="true" />
-                <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+                <element signature="e#591#691#0" expanded="true" />
                 <element signature="n#!!block;n#Make#0" expanded="false" />
               </folding>
             </state>
@@ -455,15 +454,6 @@
     <history-entry file="TestInitialElection_in_test_test_go - 2017.12.14 at 13h 25m 45s.xml">
       <configuration name="TestInitialElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestReElection_in_test_test_go - 2017.11.23 at 13h 28m 10s.xml">
-      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestReElection_in_test_test_go - 2017.11.23 at 13h 30m 29s.xml">
-      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestReElection_in_test_test_go - 2017.11.24 at 09h 12m 12s.xml">
-      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
     <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 12h 39m 12s.xml">
       <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
@@ -474,6 +464,15 @@
       <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
     <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 13h 25m 54s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 13h 44m 24s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 14h 05m 39s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 14h 08m 40s.xml">
       <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
   </component>
@@ -489,7 +488,7 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298122" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32159624" sideWeight="0.50214136" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32159624" sideWeight="0.49785867" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32159624" sideWeight="0.49785867" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298122" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.59624416" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -529,7 +528,9 @@
     <MESSAGE value="refactor code" />
     <MESSAGE value="add init indexing" />
     <MESSAGE value="complete rpc args. add persist before rpc.fix  bug of converting to follower without term check in appendEntries rpc" />
-    <option name="LAST_COMMIT_MESSAGE" value="complete rpc args. add persist before rpc.fix  bug of converting to follower without term check in appendEntries rpc" />
+    <MESSAGE value="add  log check and check already vote in handling request vote" />
+    <MESSAGE value="add log operations in response to appendEntries" />
+    <option name="LAST_COMMIT_MESSAGE" value="add log operations in response to appendEntries" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -679,8 +680,7 @@
         <state relative-caret-position="356">
           <caret line="288" column="15" lean-forward="true" selection-start-line="288" selection-start-column="15" selection-end-line="288" selection-end-column="15" />
           <folding>
-            <element signature="e#591#721#0" expanded="true" />
-            <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+            <element signature="e#591#691#0" expanded="true" />
             <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>
@@ -762,8 +762,7 @@
         <state relative-caret-position="3135">
           <caret line="197" column="0" lean-forward="true" selection-start-line="197" selection-start-column="0" selection-end-line="197" selection-end-column="0" />
           <folding>
-            <element signature="e#591#721#0" expanded="true" />
-            <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+            <element signature="e#591#691#0" expanded="true" />
             <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>
@@ -811,8 +810,7 @@
         <state relative-caret-position="345">
           <caret line="15" column="22" lean-forward="false" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
           <folding>
-            <element signature="e#591#721#0" expanded="true" />
-            <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+            <element signature="e#591#691#0" expanded="true" />
             <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>
@@ -846,8 +844,7 @@
         <state relative-caret-position="322">
           <caret line="14" column="33" lean-forward="false" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
           <folding>
-            <element signature="e#591#721#0" expanded="true" />
-            <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+            <element signature="e#591#691#0" expanded="true" />
             <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>
@@ -1008,11 +1005,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="239" column="26" lean-forward="true" selection-start-line="239" selection-start-column="26" selection-end-line="239" selection-end-column="26" />
+        <state relative-caret-position="342">
+          <caret line="468" column="0" lean-forward="true" selection-start-line="468" selection-start-column="0" selection-end-line="468" selection-end-column="0" />
           <folding>
-            <element signature="e#591#721#0" expanded="true" />
-            <element signature="n#!!block;n#startCampaign#0" expanded="false" />
+            <element signature="e#591#691#0" expanded="true" />
             <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>

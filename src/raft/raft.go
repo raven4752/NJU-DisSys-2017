@@ -466,12 +466,13 @@ func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 
 			//change identification
 			rf.identification = LEADER
-			//set hearbeat timeout
-			rf.resetHeartBeatTimeOut()
+
 			//init indexes
 			rf.initIndex()
 			//clear ElectionTimeout
 			rf.electTimeOut = make(chan time.Time)
+			//send hearbeat immediately
+			rf.heartBeat()
 			rf.print(fmt.Sprintf(" the central cluster has made a decision"))
 		} else {
 			rf.print(fmt.Sprintf("i am not too modest ,how can i be a leader as a server"))
