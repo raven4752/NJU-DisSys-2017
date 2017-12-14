@@ -158,8 +158,12 @@ type RequestVoteReply struct {
 	VoteGranted bool
 }
 type AppendEntriesArgs struct {
-	Term   int
-	Leader int
+	Term         int
+	Leader       int
+	prevLogIndex int
+	prevLogTerm  int
+	entries      []int
+	leaderCommit int
 }
 type AppendEntriesReply struct {
 	Term    int
@@ -358,11 +362,13 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 // turn off debug output from this instance.
 //
 func (rf *Raft) Kill() {
+	rf.print(fmt.Sprintf("i am killed"))
 	// Your code here, if desired.
 }
 
 func (rf *Raft) heartBeat() {
-	args := AppendEntriesArgs{rf.currentTerm, rf.me}
+	log := rf.log[len(rf.log)-1]
+	args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.term, []int{}, rf.commitIndex}
 	for i := 0; i < len(rf.peers); i++ {
 		if i != rf.me {
 			//if i am Leader ,send heartbeat
@@ -384,10 +390,9 @@ func (rf *Raft) heartBeat() {
 	//reset heartbeatTimeOut
 	rf.resetHeartBeatTimeOut()
 }
+
 func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
-	if rf.identification == FOLLOWER { //cancel election plan
-		rf.resetElectTimeOut()
-	}
+
 	rf.print("checking according to heartbeat")
 	reply := AppendEntriesReply{}
 	term := t.Request.Term
@@ -396,7 +401,11 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 		reply.Success = false
 		reply.Term = rf.currentTerm
 	} else {
-		rf.checkTerm(term)
+		converted := rf.checkTerm(term)
+		if rf.identification == FOLLOWER && !converted { //cancel election plan
+
+			rf.resetElectTimeOut()
+		}
 		reply.Term = rf.currentTerm
 	}
 	t.ReplyChan <- reply
@@ -448,7 +457,13 @@ func (rf *Raft) initIndex() {
 	rf.nextIndex = make([]int, len(rf.peers))
 	rf.matchIndex = make([]int, len(rf.peers))
 	for i := 1; i < len(rf.peers); i++ {
-		rf.nextIndex[i] = 1
+		rf.nextIndex[i] = len(rf.log)
+	}
+}
+func (rf *Raft) checkLog(applyCh chan ApplyMsg) {
+	if rf.commitIndex > rf.lassApplied {
+		rf.lassApplied += 1
+		applyCh <- ApplyMsg{rf.lassApplied, rf.log[rf.lassApplied].Command, false, []byte{}}
 	}
 }
 func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
@@ -470,12 +485,17 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 			rf.print(fmt.Sprintf("receiving heartbeat reply term : %d ", t.Term))
 			rf.checkTerm(t.Term)
 			rf.mu.Unlock()
-		case t := <-rf.applyEntriesArgsChan:
+		case t := <-rf.applyEntriesArgsChan: //receive apply entries rpc
+			rf.persist() //persist before respond to rpc
+
 			rf.mu.Lock()
+			rf.checkLog(applyCh)
 			rf.HandleApplyEntries(t)
 			rf.mu.Unlock()
 		case t := <-rf.RequestVoteArgsChan: //
+			rf.persist() //persist before respond to rpc
 			rf.mu.Lock()
+			rf.checkLog(applyCh)
 			rf.HandleRequestVote(t)
 			rf.mu.Unlock()
 		case t := <-rf.RequestVoteReplyChan: //receive num voters
@@ -513,7 +533,6 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.start = time.Now()
 	// Your initialization code here.
 	rf.identification = FOLLOWER
-
 	rf.votedFor = NOCANDIDATE
 	//init log with a empty log to make index starting from 1
 	rf.log = append(rf.log, Log{})
