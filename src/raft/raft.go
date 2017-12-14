@@ -426,6 +426,8 @@ func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 			rf.identification = LEADER
 			//set hearbeat timeout
 			rf.resetHeartBeatTimeOut()
+			//init indexes
+			rf.initIndex()
 			//clear ElectionTimeout
 			rf.electTimeOut = make(chan time.Time)
 			rf.print(fmt.Sprintf(" the central cluster has made a decision"))
@@ -439,6 +441,14 @@ func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 				//kill all sones
 			}
 		}
+	}
+}
+func (rf *Raft) initIndex() {
+	//init nextindex and match index
+	rf.nextIndex = make([]int, len(rf.peers))
+	rf.matchIndex = make([]int, len(rf.peers))
+	for i := 1; i < len(rf.peers); i++ {
+		rf.nextIndex[i] = 1
 	}
 }
 func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
@@ -507,6 +517,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.votedFor = NOCANDIDATE
 	//init log with a empty log to make index starting from 1
 	rf.log = append(rf.log, Log{})
+
 	//init electTimeOut
 	rf.resetElectTimeOut()
 	//init heartBeatTimeOut
