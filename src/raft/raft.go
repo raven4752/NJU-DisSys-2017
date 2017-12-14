@@ -44,14 +44,15 @@ type Log struct {
 	Command interface{}
 }
 
-var verbose bool = true
+var verbose bool = false
+var info bool = true
 
 //
 // A Go object implementing a single Raft Peer.
 //
 const NOCANDIDATE int = -1
 const VOTETIMEOUTBASIC int = 150
-const HEARTBEATTIMEOUT int = 30
+const HEARTBEATTIMEOUT int = 50
 const (
 	FOLLOWER  = 0
 	CANDIDATE = 1
@@ -90,7 +91,6 @@ type Raft struct {
 	RequestVoteArgsChan    chan RequestVoteTuple
 	RequestVoteReplyChan   chan RequestVoteReply
 	ApplyMsgChan           chan ApplyMsg
-	ApplyMsgNotifyChan     chan int //chan used to block client call return
 }
 
 // return currentTerm and whether this server
@@ -293,6 +293,23 @@ func (rf *Raft) sendAppendEntries(server int, args AppendEntriesArgs, reply *App
 	return ok
 }
 func (rt *Raft) print(msg string) {
+	if info {
+		var state string
+		switch rt.identification {
+		case FOLLOWER:
+			state = "follower"
+		case CANDIDATE:
+			state = "candidate"
+		case LEADER:
+			state = "Leader"
+		default:
+			state = "unknown"
+		}
+		timeElapsed := time.Now().Sub(rt.start)
+		fmt.Printf("server %d T %d state %s : %s at %d \n", rt.me, rt.currentTerm, state, msg, timeElapsed.Nanoseconds()/(int64)(time.Millisecond))
+	}
+}
+func (rt *Raft) verbose(msg string) {
 	if verbose {
 		var state string
 		switch rt.identification {
@@ -339,168 +356,9 @@ func (rf *Raft) startCampaign() {
 					rf.print(fmt.Sprintf("receive support %d", index))
 				}
 				replyChan <- reply
-				rf.print("write Reply to channel ")
+				//rf.print("write Reply to channel ")
 
 			}(i, rf.RequestVoteReplyChan)
-		}
-	}
-
-}
-
-//
-// the service using Raft (e.g. a k/v server) wants to start
-// agreement on the next command to be appended to Raft's log. if this
-// server isn't the Leader, returns false. otherwise start the
-// agreement and return immediately. there is no guarantee that this
-// command will ever be committed to the Raft log, since the Leader
-// may fail or lose an election.
-//
-// the first return value is the index that the command will appear at
-// if it's ever committed. the second return value is the current
-// Term. the third return value is true if this server believes it is
-// the Leader.
-//
-
-//
-// the tester calls Kill() when a Raft instance won't
-// be needed again. you are not required to do anything
-// in Kill(), but it might be convenient to (for example)
-// turn off debug output from this instance.
-//
-func (rf *Raft) Kill() {
-	rf.print(fmt.Sprintf("i am killed"))
-	// Your code here, if desired.
-}
-
-func (rf *Raft) heartBeat() {
-	log := rf.log[len(rf.log)-1]
-	args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.Term, []Log{}, rf.commitIndex}
-	for i := 0; i < len(rf.peers); i++ {
-
-		//if i am Leader ,send heartbeat
-		go func(index int) {
-			//create applyentriesArgs
-			reply := &AppendEntriesReply{}
-
-			//rf.print(fmt.Sprintf("sending heartbeat to %d", index))
-
-			ok := rf.sendAppendEntries(index, args, reply)
-			if !ok {
-				rf.print("heartbeat failed.")
-			}
-			replyPeer := AppendEntriesReplyTuple{*reply, index}
-
-			rf.AppendEntriesReplyChan <- replyPeer
-
-		}(i)
-
-	}
-	//reset heartbeatTimeOut
-	rf.resetHeartBeatTimeOut()
-}
-
-func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
-	if len(t.Request.Entries) == 0 {
-		//rf.print("checking according to heartbeat")
-
-	} else {
-		rf.print("receiving appendentries call")
-	}
-	reply := AppendEntriesReply{}
-	term := t.Request.Term
-	index := t.Request.PrevLogIndex
-	Logterm := t.Request.PrevLogTerm
-	entries := t.Request.Entries
-	leaderCommit := t.Request.LeaderCommit
-	reply.Success = true
-	converted := rf.checkTerm(term)
-	if len(rf.log)-1 < index || rf.log[index].Term != Logterm {
-		reply.Success = false
-		//inform the leader of the first conflicting Entries with the same Term
-		if len(rf.log)-1 >= index {
-			for i := len(rf.log); i >= 0; i-- {
-				if rf.log[i-1].Term != rf.log[index].Term {
-					reply.ConflictEntryTerm = rf.log[index].Term
-					reply.ConflictEntryIndex = i
-					break
-				}
-			}
-		} else {
-			reply.ConflictEntryIndex = len(rf.log)
-			reply.ConflictEntryTerm = Logterm
-		}
-		rf.print(fmt.Sprintf("request logs from %d", reply.ConflictEntryIndex))
-	} else {
-		if term < rf.currentTerm {
-			reply.Success = false
-			reply.Term = rf.currentTerm
-			rf.print("rejected due to low Term")
-		} else {
-			if len(entries) > 0 {
-				for i := index + 1; i < len(rf.log); i++ {
-					if rf.log[i-1].Term != entries[i-index-1].Term {
-						//pop all log starting from i and break
-						rf.log = rf.log[0:i]
-						break
-					}
-				}
-				rf.log = append(rf.log, entries...) //sweet!
-				//update commit index
-				rf.print(fmt.Sprintf("log appended current index: %d", len(rf.log)-1))
-			}
-
-			if leaderCommit > rf.commitIndex {
-				if leaderCommit > len(rf.log)-1 {
-					rf.commitIndex = len(rf.log) - 1
-				} else {
-					rf.commitIndex = leaderCommit
-				}
-				rf.print(fmt.Sprintf("update commit index to %d", rf.commitIndex))
-
-			}
-			if rf.identification == FOLLOWER && !converted { //cancel election plan
-
-				rf.resetElectTimeOut()
-			}
-			reply.Term = rf.currentTerm
-		}
-
-	}
-
-	t.ReplyChan <- reply
-}
-func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
-	rf.checkTerm(t.Reply.Term)
-	if rf.identification == LEADER {
-		if !t.Reply.Success {
-
-			index2send := t.Reply.ConflictEntryIndex
-			log := rf.log[index2send-1]
-
-			entries := rf.log[index2send:]
-			args := AppendEntriesArgs{rf.currentTerm, rf.me, index2send - 1, log.Term, entries, rf.commitIndex}
-			go func() {
-				reply := &AppendEntriesReply{}
-
-				rf.print(fmt.Sprintf("sending logs starting from %d to help Peer %d updating", index2send, t.Peer))
-				ok := rf.sendAppendEntries(t.Peer, args, reply)
-				if !ok {
-					rf.print("sending log  failed.")
-				}
-				replyPeer := AppendEntriesReplyTuple{*reply, t.Peer}
-
-				rf.AppendEntriesReplyChan <- replyPeer
-
-			}()
-		} else {
-			if rf.matchIndex[t.Peer] != len(rf.log)-1 {
-				rf.print(fmt.Sprintf("updating Peer %d 's match index to %d", t.Peer, len(rf.log)-1))
-
-			}
-			//update next index for Peer
-			rf.nextIndex[t.Peer] = len(rf.log)
-			rf.matchIndex[t.Peer] = len(rf.log) - 1 //?
-			//update match index for Peer
 		}
 	}
 
@@ -556,44 +414,195 @@ func (rf *Raft) initIndex() {
 		rf.nextIndex[i] = len(rf.log)
 	}
 }
+
+//
+// the tester calls Kill() when a Raft instance won't
+// be needed again. you are not required to do anything
+// in Kill(), but it might be convenient to (for example)
+// turn off debug output from this instance.
+//
+func (rf *Raft) Kill() {
+	rf.print(fmt.Sprintf("i am killed"))
+	// Your code here, if desired.
+}
+
+func (rf *Raft) heartBeat() {
+	log := rf.log[len(rf.log)-1]
+	args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.Term, []Log{}, rf.commitIndex}
+	for i := 0; i < len(rf.peers); i++ {
+
+		//if i am Leader ,send heartbeat
+		go func(index int) {
+			//create applyentriesArgs
+			reply := &AppendEntriesReply{}
+
+			rf.verbose(fmt.Sprintf("sending heartbeat to %d", index))
+
+			ok := rf.sendAppendEntries(index, args, reply)
+			if !ok {
+				rf.print("heartbeat failed.")
+			} else {
+				replyPeer := AppendEntriesReplyTuple{*reply, index}
+
+				rf.AppendEntriesReplyChan <- replyPeer
+			}
+		}(i)
+
+	}
+	//reset heartbeatTimeOut
+	rf.resetHeartBeatTimeOut()
+}
+
+func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
+	if len(t.Request.Entries) == 0 {
+		rf.verbose("checking according to heartbeat")
+
+	} else {
+		rf.print("receiving appendentries call")
+	}
+	reply := AppendEntriesReply{}
+	term := t.Request.Term
+	index := t.Request.PrevLogIndex
+	Logterm := t.Request.PrevLogTerm
+	entries := t.Request.Entries
+	leaderCommit := t.Request.LeaderCommit
+	reply.Success = true
+	converted := rf.checkTerm(term)
+	if rf.identification == FOLLOWER && !converted { //cancel election plan
+		rf.resetElectTimeOut()
+	}
+	switch {
+	case term < rf.currentTerm: //if term is old,return false
+		reply.Success = false
+		reply.Term = rf.currentTerm
+		rf.print("rejected due to low Term")
+
+	case len(rf.log)-1 < index: //not having that many indexes
+		reply.Success = false
+		//requesting for logs starting from the end
+		reply.ConflictEntryIndex = len(rf.log)
+		reply.ConflictEntryTerm = Logterm //how to set the term???
+		rf.print(fmt.Sprintf("request logs from %d", reply.ConflictEntryIndex))
+
+	case rf.log[index].Term != Logterm: //log not matches
+		reply.Success = false
+		reply.ConflictEntryIndex = index
+		reply.ConflictEntryTerm = rf.log[index].Term
+		for i := len(rf.log); i >= 0; i-- {
+			if rf.log[i-1].Term != rf.log[index].Term {
+				reply.ConflictEntryIndex = i
+				break
+			}
+		}
+		rf.print(fmt.Sprintf("request logs from %d", reply.ConflictEntryIndex))
+	default: //update logs
+
+		if len(entries) > 0 {
+			for i := index + 1; i < len(rf.log); i++ {
+				if rf.log[i].Term != entries[i-index-1].Term {
+					//pop all log starting from i and break
+					rf.log = rf.log[0:i]
+					break
+				}
+			}
+			for i := 0; i < len(entries); i++ {
+				//check if already have
+				if len(rf.log)-1 >= index+1+i {
+					rf.log[index+1+i] = entries[i]
+				} else {
+					rf.log = append(rf.log, entries[i])
+				}
+			}
+			//rf.log = append(rf.log, entries...) //sweet!
+			//update commit index
+			rf.print(fmt.Sprintf("log appended current index: %d", len(rf.log)-1))
+		}
+
+		if leaderCommit > rf.commitIndex {
+			if leaderCommit > len(rf.log)-1 {
+				rf.commitIndex = len(rf.log) - 1
+			} else {
+				rf.commitIndex = leaderCommit
+			}
+			rf.print(fmt.Sprintf("update commit index to %d", rf.commitIndex))
+
+		}
+
+	}
+	reply.Term = rf.currentTerm
+
+	t.ReplyChan <- reply
+}
+func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
+	rf.checkTerm(t.Reply.Term)
+	if rf.identification == LEADER {
+
+		if !t.Reply.Success {
+
+			index2send := t.Reply.ConflictEntryIndex
+			if index2send > 0 { //fail due to log conflict
+				entries := rf.log[index2send:]
+				args := AppendEntriesArgs{rf.currentTerm, rf.me, index2send - 1, rf.log[index2send-1].Term, entries, rf.commitIndex}
+				go func(args AppendEntriesArgs) {
+					reply := &AppendEntriesReply{}
+
+					rf.print(fmt.Sprintf("sending logs starting from %d to help Peer %d updating", index2send, t.Peer))
+					ok := rf.sendAppendEntries(t.Peer, args, reply)
+					if !ok {
+						rf.print("sending log  failed.")
+					} else {
+						replyPeer := AppendEntriesReplyTuple{*reply, t.Peer}
+
+						rf.AppendEntriesReplyChan <- replyPeer
+					}
+				}(args)
+			}
+		} else {
+			if rf.matchIndex[t.Peer] != len(rf.log)-1 {
+				rf.print(fmt.Sprintf("updating Peer %d 's match index to %d", t.Peer, len(rf.log)-1))
+
+			}
+			//update next index for Peer
+			rf.nextIndex[t.Peer] = len(rf.log)
+			rf.matchIndex[t.Peer] = len(rf.log) - 1 //?
+			//update match index for Peer
+		}
+	}
+
+}
+
+// the first return value is the index that the command will appear at
+// if it's ever committed. the second return value is the current
+// Term. the third return value is true if this server believes it is
+// the Leader.
+//
+//
+// the service using Raft (e.g. a k/v server) wants to start
+// agreement on the next command to be appended to Raft's log. if this
+// server isn't the Leader, returns false. otherwise start the
+// agreement and return immediately. there is no guarantee that this
+// command will ever be committed to the Raft log, since the Leader
+// may fail or lose an election.
+//
 func (rf *Raft) Start(command interface{}) (int, int, bool) {
+	rf.mu.Lock()
+	defer rf.mu.Unlock()
 	index := len(rf.log)
 	term := rf.currentTerm
 	isLeader := rf.identification == LEADER
 	rf.print("receive client call")
+
 	if !isLeader {
 		return index, term, isLeader
 	} else {
-		log := rf.log[len(rf.log)-1]
 		newlog := Log{rf.currentTerm, command}
-		args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.Term, []Log{newlog}, rf.commitIndex}
 		//add log to local log
-		//rf.log = append(rf.log, newlog)
-		for i := 0; i < len(rf.peers); i++ {
-			{
-				//if i am Leader ,send applyentries
-				go func(index int, args AppendEntriesArgs) {
-					//create applyentriesArgs
-					reply := &AppendEntriesReply{}
+		rf.log = append(rf.log, newlog)
 
-					rf.print(fmt.Sprintf("sending append Entries with log len %d", len(args.Entries)))
+		rf.print(fmt.Sprintf("**********return to client with index %d***********", index))
+		return index, term, isLeader
 
-					ok := rf.sendAppendEntries(index, args, reply)
-					if !ok {
-						rf.print("append Entries failed.")
-					}
-					replyPeer := AppendEntriesReplyTuple{*reply, index}
-					rf.AppendEntriesReplyChan <- replyPeer
-
-				}(i, args)
-			}
-		}
-		//start agreement
-	_:
-		<-rf.ApplyMsgNotifyChan
 	}
-	rf.print(fmt.Sprintf("**********return to client with index %d***********", index))
-	return index, term, isLeader
 }
 
 func (rf *Raft) checkLog() {
@@ -604,6 +613,7 @@ func (rf *Raft) checkLog() {
 			numagree := 0
 			if rf.log[i].Term != rf.currentTerm {
 				rf.print(fmt.Sprintf("rejected commit index to be %d due to Term %d", i, rf.log[i].Term))
+				continue
 			}
 			for j := 1; j < len(rf.peers); j++ {
 				if rf.matchIndex[j] >= i {
@@ -611,7 +621,7 @@ func (rf *Raft) checkLog() {
 				}
 			}
 
-			if numagree > len(rf.peers)/2 && rf.log[i].Term == rf.currentTerm {
+			if numagree > len(rf.peers)/2 {
 				rf.commitIndex = i
 				rf.print(fmt.Sprintf("update commit index to %d", rf.commitIndex))
 			}
@@ -621,9 +631,6 @@ func (rf *Raft) checkLog() {
 		rf.lassApplied += 1
 		rf.ApplyMsgChan <- ApplyMsg{rf.lassApplied, rf.log[rf.lassApplied].Command, false, []byte{}}
 
-		if rf.identification == LEADER { //notify return client call
-			rf.ApplyMsgNotifyChan <- 0
-		}
 		rf.print("apply msg")
 
 	}
@@ -634,7 +641,7 @@ func (rf *Raft) mainloop() {
 		select {
 		case <-rf.heartBeatTimeOut: //send heartbeart if is Leader
 
-			//rf.print("time to heartbeat")
+			rf.verbose("time to heartbeat")
 
 			rf.mu.Lock()
 			rf.checkLog()
@@ -646,7 +653,7 @@ func (rf *Raft) mainloop() {
 
 			rf.mu.Lock()
 			rf.checkLog()
-			//rf.print(fmt.Sprintf("receiving heartbeat Reply Term : %d ", t.Reply.Term))
+			rf.verbose(fmt.Sprintf("receiving heartbeat Reply Term : %d ", t.Reply.Term))
 			rf.HandleResponseApplyEntries(t)
 			rf.mu.Unlock()
 		case t := <-rf.applyEntriesArgsChan: //receive apply Entries rpc
@@ -716,7 +723,6 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.RequestVoteArgsChan = make(chan RequestVoteTuple)
 	rf.RequestVoteReplyChan = make(chan RequestVoteReply, numpeer)
 	rf.ApplyMsgChan = applyCh
-	rf.ApplyMsgNotifyChan = make(chan int)
 	//rf.CancelCampaignChan = make(chan int)
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
