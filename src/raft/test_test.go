@@ -26,15 +26,15 @@ func TestInitialElection(t *testing.T) {
 
 	fmt.Printf("Test: initial election ...\n")
 
-	// is a leader elected?
+	// is a Leader elected?
 	cfg.checkOneLeader()
 
-	// does the leader+term stay the same there is no failure?
+	// does the Leader+Term stay the same there is no failure?
 	term1 := cfg.checkTerms()
 	time.Sleep(2 * RaftElectionTimeout)
 	term2 := cfg.checkTerms()
 	if term1 != term2 {
-		fmt.Printf("warning: term changed even though there were no failures")
+		fmt.Printf("warning: Term changed even though there were no failures")
 	}
 
 	fmt.Printf("  ... Passed\n")
@@ -49,27 +49,27 @@ func TestReElection(t *testing.T) {
 
 	leader1 := cfg.checkOneLeader()
 
-	// if the leader disconnects, a new one should be elected.
+	// if the Leader disconnects, a new one should be elected.
 	cfg.disconnect(leader1)
 	cfg.checkOneLeader()
 
-	// if the old leader rejoins, that shouldn't
-	// disturb the old leader.
+	// if the old Leader rejoins, that shouldn't
+	// disturb the old Leader.
 	cfg.connect(leader1)
 	leader2 := cfg.checkOneLeader()
 
-	// if there's no quorum, no leader should
+	// if there's no quorum, no Leader should
 	// be elected.
 	cfg.disconnect(leader2)
 	cfg.disconnect((leader2 + 1) % servers)
 	time.Sleep(2 * RaftElectionTimeout)
 	cfg.checkNoLeader()
 
-	// if a quorum arises, it should elect a leader.
+	// if a quorum arises, it should elect a Leader.
 	cfg.connect((leader2 + 1) % servers)
 	cfg.checkOneLeader()
 
-	// re-join of last node shouldn't prevent leader from existing.
+	// re-join of last node shouldn't prevent Leader from existing.
 	cfg.connect(leader2)
 	cfg.checkOneLeader()
 
@@ -147,7 +147,7 @@ func TestFailNoAgree(t *testing.T) {
 
 	index, _, ok := cfg.rafts[leader].Start(20)
 	if ok != true {
-		t.Fatalf("leader rejected Start()")
+		t.Fatalf("Leader rejected Start()")
 	}
 	if index != 2 {
 		t.Fatalf("expected index 2, got %v", index)
@@ -165,7 +165,7 @@ func TestFailNoAgree(t *testing.T) {
 	cfg.connect((leader + 2) % servers)
 	cfg.connect((leader + 3) % servers)
 
-	// the disconnected majority may have chosen a leader from
+	// the disconnected majority may have chosen a Leader from
 	// among their own ranks, forgetting index 2.
 	// or perhaps
 	leader2 := cfg.checkOneLeader()
@@ -200,7 +200,7 @@ loop:
 		leader := cfg.checkOneLeader()
 		_, term, ok := cfg.rafts[leader].Start(1)
 		if !ok {
-			// leader moved on really quickly
+			// Leader moved on really quickly
 			continue
 		}
 
@@ -227,7 +227,7 @@ loop:
 
 		for j := 0; j < servers; j++ {
 			if t, _ := cfg.rafts[j].GetState(); t != term {
-				// term changed -- can't expect low RPC counts
+				// Term changed -- can't expect low RPC counts
 				continue loop
 			}
 		}
@@ -277,7 +277,7 @@ loop:
 	}
 
 	if !success {
-		t.Fatalf("term changed too often")
+		t.Fatalf("Term changed too often")
 	}
 
 	fmt.Printf("  ... Passed\n")
@@ -288,27 +288,27 @@ func TestRejoin(t *testing.T) {
 	cfg := make_config(t, servers, false)
 	defer cfg.cleanup()
 
-	fmt.Printf("Test: rejoin of partitioned leader ...\n")
+	fmt.Printf("Test: rejoin of partitioned Leader ...\n")
 
 	cfg.one(101, servers)
 
-	// leader network failure
+	// Leader network failure
 	leader1 := cfg.checkOneLeader()
 	cfg.disconnect(leader1)
 
-	// make old leader try to agree on some entries
+	// make old Leader try to agree on some entries
 	cfg.rafts[leader1].Start(102)
 	cfg.rafts[leader1].Start(103)
 	cfg.rafts[leader1].Start(104)
 
-	// new leader commits, also for index=2
+	// new Leader commits, also for index=2
 	cfg.one(103, 2)
 
-	// new leader network failure
+	// new Leader network failure
 	leader2 := cfg.checkOneLeader()
 	cfg.disconnect(leader2)
 
-	// old leader connected again
+	// old Leader connected again
 	cfg.connect(leader1)
 
 	cfg.one(104, 2)
@@ -326,11 +326,11 @@ func TestBackup(t *testing.T) {
 	cfg := make_config(t, servers, false)
 	defer cfg.cleanup()
 
-	fmt.Printf("Test: leader backs up quickly over incorrect follower logs ...\n")
+	fmt.Printf("Test: Leader backs up quickly over incorrect follower logs ...\n")
 
 	cfg.one(rand.Int(), servers)
 
-	// put leader and one follower in a partition
+	// put Leader and one follower in a partition
 	leader1 := cfg.checkOneLeader()
 	cfg.disconnect((leader1 + 2) % servers)
 	cfg.disconnect((leader1 + 3) % servers)
@@ -356,7 +356,7 @@ func TestBackup(t *testing.T) {
 		cfg.one(rand.Int(), 3)
 	}
 
-	// now another partitioned leader and one follower
+	// now another partitioned Leader and one follower
 	leader2 := cfg.checkOneLeader()
 	other := (leader1 + 2) % servers
 	if leader2 == other {
@@ -371,7 +371,7 @@ func TestBackup(t *testing.T) {
 
 	time.Sleep(RaftElectionTimeout / 2)
 
-	// bring original leader back to life,
+	// bring original Leader back to life,
 	for i := 0; i < servers; i++ {
 		cfg.disconnect(i)
 	}
@@ -412,7 +412,7 @@ func TestCount(t *testing.T) {
 	total1 := rpcs()
 
 	if total1 > 30 || total1 < 1 {
-		t.Fatalf("too many or few RPCs (%v) to elect initial leader\n", total1)
+		t.Fatalf("too many or few RPCs (%v) to elect initial Leader\n", total1)
 	}
 
 	var total2 int
@@ -430,7 +430,7 @@ loop:
 		iters := 10
 		starti, term, ok := cfg.rafts[leader].Start(1)
 		if !ok {
-			// leader moved on really quickly
+			// Leader moved on really quickly
 			continue
 		}
 		cmds := []int{}
@@ -443,7 +443,7 @@ loop:
 				continue loop
 			}
 			if !ok {
-				// No longer the leader, so term has changed
+				// No longer the Leader, so Term has changed
 				continue loop
 			}
 			if starti+i != index1 {
@@ -455,7 +455,7 @@ loop:
 			cmd := cfg.wait(starti+i, servers, term)
 			if ix, ok := cmd.(int); ok == false || ix != cmds[i-1] {
 				if ix == -1 {
-					// term changed -- try again
+					// Term changed -- try again
 					continue loop
 				}
 				t.Fatalf("wrong value %v committed for index %v; expected %v\n", cmd, starti+i, cmds)
@@ -466,7 +466,7 @@ loop:
 		total2 = 0
 		for j := 0; j < servers; j++ {
 			if t, _ := cfg.rafts[j].GetState(); t != term {
-				// term changed -- can't expect low RPC counts
+				// Term changed -- can't expect low RPC counts
 				// need to keep going to update total2
 				failed = true
 			}
@@ -486,7 +486,7 @@ loop:
 	}
 
 	if !success {
-		t.Fatalf("term changed too often")
+		t.Fatalf("Term changed too often")
 	}
 
 	time.Sleep(RaftElectionTimeout)
@@ -600,7 +600,7 @@ func TestPersist3(t *testing.T) {
 	cfg := make_config(t, servers, false)
 	defer cfg.cleanup()
 
-	fmt.Printf("Test: partitioned leader and one follower crash, leader restarts ...\n")
+	fmt.Printf("Test: partitioned Leader and one follower crash, Leader restarts ...\n")
 
 	cfg.one(101, 3)
 
@@ -627,12 +627,12 @@ func TestPersist3(t *testing.T) {
 
 //
 // Test the scenarios described in Figure 8 of the extended Raft paper. Each
-// iteration asks a leader, if there is one, to insert a command in the Raft
-// log.  If there is a leader, that leader will fail quickly with a high
+// iteration asks a Leader, if there is one, to insert a command in the Raft
+// log.  If there is a Leader, that Leader will fail quickly with a high
 // probability (perhaps without committing the command), or crash after a while
 // with low probability (most likey committing the command).  If the number of
 // alive servers isn't enough to form a majority, perhaps start a new server.
-// The leader in a new term may try to finish replicating log entries that
+// The Leader in a new Term may try to finish replicating log entries that
 // haven't been committed yet.
 //
 func TestFigure8(t *testing.T) {
@@ -800,7 +800,7 @@ func internalChurn(t *testing.T, unreliable bool) {
 			index := -1
 			ok := false
 			for i := 0; i < servers; i++ {
-				// try them all, maybe one of them is a leader
+				// try them all, maybe one of them is a Leader
 				cfg.mu.Lock()
 				rf := cfg.rafts[i]
 				cfg.mu.Unlock()
@@ -813,7 +813,7 @@ func internalChurn(t *testing.T, unreliable bool) {
 				}
 			}
 			if ok {
-				// maybe leader will commit our value, maybe not.
+				// maybe Leader will commit our value, maybe not.
 				// but don't wait forever.
 				for _, to := range []int{10, 20, 50, 100, 200} {
 					nd, cmd := cfg.nCommitted(index)

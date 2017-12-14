@@ -44,7 +44,6 @@ type Log struct {
 	Command interface{}
 }
 
-var poemOrder int = 0
 var verbose bool = true
 
 //
@@ -73,22 +72,23 @@ type Raft struct {
 
 	log []Log
 	//volatile state
-	commitIndex            int
-	lassApplied            int
-	identification         int
-	currentFollower        int
-	votesReceived          int
-	electTimeOut           <-chan time.Time
-	heartBeatTimeOut       <-chan time.Time
-	applyEntriesArgsChan   chan AppendEntriesTuple
-	AppendEntriesReplyChan chan AppendEntriesReply
-	RequestVoteArgsChan    chan RequestVoteTuple
-	RequestVoteReplyChan   chan RequestVoteReply
+	commitIndex      int //not used
+	lassApplied      int //not used
+	identification   int
+	currentFollower  int //used in voting
+	votesReceived    int //used in voting
+	electTimeOut     <-chan time.Time
+	heartBeatTimeOut <-chan time.Time
+
 	//volatile state on leaders
 	nextIndex  []int
 	matchIndex []int
 	//start time
-	start time.Time
+	start                  time.Time
+	applyEntriesArgsChan   chan AppendEntriesTuple
+	AppendEntriesReplyChan chan AppendEntriesReply
+	RequestVoteArgsChan    chan RequestVoteTuple
+	RequestVoteReplyChan   chan RequestVoteReply
 }
 
 // return currentTerm and whether this server
@@ -147,10 +147,6 @@ type RequestVoteArgs struct {
 	CandidateId  int
 	LastLogIndex int
 	LastLogTerm  int
-}
-type VoteResult struct {
-	Term         int
-	NumFollowers int
 }
 
 //
@@ -229,9 +225,10 @@ func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
 	msg := fmt.Sprintf("receiving vote Request from %d", candidateId)
 	rf.print(msg)
 	reply.VoteGranted = false
+	converted := rf.checkTerm(term)
 
 	if rf.identification == FOLLOWER { //only reply vote when at FOLLOWER state
-		if term > rf.currentTerm {
+		if converted {
 			//change my vote when staled
 			rf.votedFor = candidateId
 			msg := fmt.Sprintf("vote for %d", candidateId)
@@ -248,7 +245,6 @@ func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
 	} else {
 		rf.print(fmt.Sprintf("i am not follower,ignore request"))
 	}
-	rf.checkTerm(term)
 	reply.Term = rf.currentTerm
 
 	argsTuple.ReplyChan <- reply
@@ -318,14 +314,16 @@ func (rf *Raft) startCampaign() {
 				if ok {
 					rf.print(fmt.Sprintf("rpc call Success %d", index))
 				} else {
+					//set reply to term to notify network fail
+					reply.Term = rf.currentTerm
 					rf.print(fmt.Sprintf("rpc call failed %d", index))
 				}
 				if reply.VoteGranted {
 					rf.print(fmt.Sprintf("receive support %d", index))
-
 				}
 				replyChan <- reply
 				rf.print("write reply to channel ")
+
 			}(i, rf.RequestVoteReplyChan)
 		}
 	}
@@ -363,6 +361,86 @@ func (rf *Raft) Kill() {
 	// Your code here, if desired.
 }
 
+func (rf *Raft) heartBeat() {
+	args := AppendEntriesArgs{rf.currentTerm, rf.me}
+	for i := 0; i < len(rf.peers); i++ {
+		if i != rf.me {
+			//if i am Leader ,send heartbeat
+			go func(index int) {
+				//create applyentriesArgs
+				reply := &AppendEntriesReply{}
+
+				rf.print("sending heartbeat")
+
+				ok := rf.sendAppendEntries(index, args, reply)
+				if !ok {
+					rf.print("heartbeat failed.")
+				}
+				rf.AppendEntriesReplyChan <- *reply
+
+			}(i)
+		}
+	}
+	//reset heartbeatTimeOut
+	rf.resetHeartBeatTimeOut()
+}
+func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
+	if rf.identification == FOLLOWER { //cancel election plan
+		rf.resetElectTimeOut()
+	}
+	rf.print("checking according to heartbeat")
+	reply := AppendEntriesReply{}
+	term := t.Request.Term
+	reply.Success = true
+	if term < rf.currentTerm {
+		reply.Success = false
+		reply.Term = rf.currentTerm
+	} else {
+		rf.checkTerm(term)
+		reply.Term = rf.currentTerm
+	}
+	t.ReplyChan <- reply
+}
+func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
+	//check Term
+	rf.checkTerm(t.Term)
+
+	if rf.identification == CANDIDATE {
+		msg := fmt.Sprintf("handling reply. current follower :%d", rf.currentFollower)
+		rf.print(msg) //only react to voteReply when i am a candidate
+		if t.Term == rf.currentTerm {
+			rf.votesReceived += 1
+			//check vote result
+			if t.VoteGranted {
+				rf.print("+1 supporter")
+				rf.currentFollower += 1
+			}
+		} else {
+			rf.print("outofDate vote reply received")
+
+		}
+		if rf.currentFollower > len(rf.peers)/2 {
+			//time to speak two poems
+
+			//change identification
+			rf.identification = LEADER
+			//set hearbeat timeout
+			rf.resetHeartBeatTimeOut()
+			//clear ElectionTimeout
+			rf.electTimeOut = make(chan time.Time)
+			rf.print(fmt.Sprintf(" the central cluster has made a decision"))
+		} else {
+			rf.print(fmt.Sprintf("i am not too modest ,how can i be a leader as a server"))
+
+			if rf.votesReceived == len(rf.peers)-1 {
+				rf.print(fmt.Sprintf("electionfailed"))
+				//campaign failed,wait
+				rf.resetElectTimeOut()
+				//kill all sones
+			}
+		}
+	}
+}
 func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 	//wait until time
 	for {
@@ -373,27 +451,7 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 
 			rf.mu.Lock()
 			if rf.identification == LEADER {
-				args := AppendEntriesArgs{rf.currentTerm, rf.me}
-				for i := 0; i < len(rf.peers); i++ {
-					if i != rf.me {
-						//if i am Leader ,send heartbeat
-						go func(index int) {
-							//create applyentriesArgs
-							reply := &AppendEntriesReply{}
-
-							rf.print("sending heartbeat")
-
-							ok := rf.sendAppendEntries(index, args, reply)
-							if !ok {
-								rf.print("heartbeat failed.")
-							}
-							rf.AppendEntriesReplyChan <- *reply
-
-						}(i)
-					}
-				}
-				//reset heartbeatTimeOut
-				rf.resetHeartBeatTimeOut()
+				rf.heartBeat()
 			}
 			rf.mu.Unlock()
 		case t := <-rf.AppendEntriesReplyChan:
@@ -404,73 +462,17 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 			rf.mu.Unlock()
 		case t := <-rf.applyEntriesArgsChan:
 			rf.mu.Lock()
-			if rf.identification == FOLLOWER { //cancel election plan
-				rf.resetElectTimeOut()
-			}
-			rf.print("checking according to heartbeat")
-			reply := AppendEntriesReply{}
-			term := t.Request.Term
-			reply.Success = true
-			if term < rf.currentTerm {
-				reply.Success = false
-				reply.Term = rf.currentTerm
-			} else {
-				rf.checkTerm(term)
-				reply.Term = rf.currentTerm
-			}
-			t.ReplyChan <- reply
+			rf.HandleApplyEntries(t)
 			rf.mu.Unlock()
 		case t := <-rf.RequestVoteArgsChan: //
-
 			rf.mu.Lock()
 			rf.HandleRequestVote(t)
 			rf.mu.Unlock()
-
 		case t := <-rf.RequestVoteReplyChan: //receive num voters
-
 			rf.mu.Lock()
-
-			//check Term
-			rf.checkTerm(t.Term)
-
-			if rf.identification == CANDIDATE {
-				msg := fmt.Sprintf("handling reply. current follower :%d", rf.currentFollower)
-				rf.print(msg) //only react to voteReply when i am a candidate
-				if t.Term == rf.currentTerm {
-					rf.votesReceived += 1
-					//check vote result
-					if t.VoteGranted {
-						rf.print("+1 supporter")
-						rf.currentFollower += 1
-					}
-				} else {
-					rf.print("outofDate vote reply received")
-
-				}
-				if rf.currentFollower > len(rf.peers)/2 {
-					//time to speak two poems
-
-					//change identification
-					rf.identification = LEADER
-					//set hearbeat timeout
-					rf.resetHeartBeatTimeOut()
-					//clear ElectionTimeout
-					rf.electTimeOut = make(chan time.Time)
-					//msg := []rune("苟利国家生死以岂因祸福避趋之")[poemOrder%14]
-					//poemOrder++
-					rf.print(fmt.Sprintf("i am not modest ,how can i be leader as a server"))
-
-				} else {
-					if rf.votesReceived == len(rf.peers)-1 {
-						rf.print(fmt.Sprintf("electionfailed"))
-						//campaign failed,wait
-						rf.resetElectTimeOut()
-					}
-				}
-			}
+			rf.HandleResponseVote(t)
 			rf.mu.Unlock()
 		case <-rf.electTimeOut: //start campaign when i am a follower or candidate
-
 			rf.mu.Lock()
 			if rf.identification == FOLLOWER || rf.identification == CANDIDATE {
 				rf.startCampaign()
@@ -515,6 +517,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.applyEntriesArgsChan = make(chan AppendEntriesTuple)
 	rf.RequestVoteArgsChan = make(chan RequestVoteTuple)
 	rf.RequestVoteReplyChan = make(chan RequestVoteReply, numpeer)
+	//rf.CancelCampaignChan = make(chan int)
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
 	go rf.mainloop(applyCh)
