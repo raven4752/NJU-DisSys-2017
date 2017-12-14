@@ -86,9 +86,10 @@ type Raft struct {
 	//start time
 	start                  time.Time
 	applyEntriesArgsChan   chan AppendEntriesTuple
-	AppendEntriesReplyChan chan AppendEntriesReply
+	AppendEntriesReplyChan chan AppendEntriesReplyTuple
 	RequestVoteArgsChan    chan RequestVoteTuple
 	RequestVoteReplyChan   chan RequestVoteReply
+	ApplyMsgChan           chan ApplyMsg
 }
 
 // return currentTerm and whether this server
@@ -168,6 +169,10 @@ type AppendEntriesArgs struct {
 type AppendEntriesReply struct {
 	Term    int
 	Success bool
+}
+type AppendEntriesReplyTuple struct {
+	reply AppendEntriesReply
+	peer  int
 }
 type RequestVoteTuple struct {
 	Request   RequestVoteArgs
@@ -353,14 +358,39 @@ func (rf *Raft) startCampaign() {
 // the Leader.
 //
 func (rf *Raft) Start(command interface{}) (int, int, bool) {
-	index := -1
-	term := -1
+	index := len(rf.log)
+	term := rf.currentTerm
 	isLeader := rf.identification == LEADER
 	if !isLeader {
 		return index, term, isLeader
 	} else {
+		log := rf.log[len(rf.log)-1]
+		//add log to local log
+		newlog := Log{rf.currentTerm, command}
+		args := AppendEntriesArgs{rf.currentTerm, rf.me, len(rf.log) - 1, log.term, []Log{newlog}, rf.commitIndex}
+		for i := 0; i < len(rf.peers); i++ {
+			if i != rf.me {
+				//if i am Leader ,send heartbeat
+				go func(index int) {
+					//create applyentriesArgs
+					reply := &AppendEntriesReply{}
+
+					rf.print("sending heartbeat")
+
+					ok := rf.sendAppendEntries(index, args, reply)
+					if !ok {
+						rf.print("heartbeat failed.")
+					}
+					replyPeer := AppendEntriesReplyTuple{*reply, i}
+					rf.AppendEntriesReplyChan <- replyPeer
+
+				}(i)
+			}
+		}
 		//start agreement
 	}
+_:
+	<-rf.ApplyMsgChan
 	return index, term, isLeader
 }
 
@@ -391,7 +421,9 @@ func (rf *Raft) heartBeat() {
 				if !ok {
 					rf.print("heartbeat failed.")
 				}
-				rf.AppendEntriesReplyChan <- *reply
+				replyPeer := AppendEntriesReplyTuple{*reply, i}
+
+				rf.AppendEntriesReplyChan <- replyPeer
 
 			}(i)
 		}
@@ -399,7 +431,9 @@ func (rf *Raft) heartBeat() {
 	//reset heartbeatTimeOut
 	rf.resetHeartBeatTimeOut()
 }
+func (rf *Raft) checkLogIfLeading(lastLogIndex int, peer int) {
 
+}
 func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 
 	rf.print("checking according to heartbeat")
@@ -410,6 +444,7 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 	entries := t.Request.entries
 	leaderCommit := t.Request.leaderCommit
 	reply.Success = true
+	converted := rf.checkTerm(term)
 	if len(rf.log)-1 < index || rf.log[index].term != Logterm {
 		reply.Success = false
 	} else {
@@ -433,16 +468,18 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 					rf.commitIndex = leaderCommit
 				}
 			}
-			converted := rf.checkTerm(term)
 			if rf.identification == FOLLOWER && !converted { //cancel election plan
 
 				rf.resetElectTimeOut()
 			}
 			reply.Term = rf.currentTerm
 		}
+
 	}
+
 	t.ReplyChan <- reply
 }
+
 func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 	//check Term
 	rf.checkTerm(t.Term)
@@ -516,8 +553,8 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 		case t := <-rf.AppendEntriesReplyChan:
 
 			rf.mu.Lock()
-			rf.print(fmt.Sprintf("receiving heartbeat reply term : %d ", t.Term))
-			rf.checkTerm(t.Term)
+			rf.print(fmt.Sprintf("receiving heartbeat reply term : %d ", t.reply.Term))
+			rf.checkTerm(t.reply.Term)
 			rf.mu.Unlock()
 		case t := <-rf.applyEntriesArgsChan: //receive apply entries rpc
 			rf.persist() //persist before respond to rpc
@@ -532,6 +569,8 @@ func (rf *Raft) mainloop(applyCh chan ApplyMsg) {
 			rf.checkLog(applyCh)
 			rf.HandleRequestVote(t)
 			rf.mu.Unlock()
+			//check his log if ia m leader
+
 		case t := <-rf.RequestVoteReplyChan: //receive num voters
 			rf.mu.Lock()
 			rf.HandleResponseVote(t)
@@ -577,10 +616,11 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.heartBeatTimeOut = make(chan time.Time)
 	//create buffer channel
 	numpeer := len(peers)
-	rf.AppendEntriesReplyChan = make(chan AppendEntriesReply, numpeer)
+	rf.AppendEntriesReplyChan = make(chan AppendEntriesReplyTuple, numpeer)
 	rf.applyEntriesArgsChan = make(chan AppendEntriesTuple)
 	rf.RequestVoteArgsChan = make(chan RequestVoteTuple)
 	rf.RequestVoteReplyChan = make(chan RequestVoteReply, numpeer)
+	rf.ApplyMsgChan = applyCh
 	//rf.CancelCampaignChan = make(chan int)
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())

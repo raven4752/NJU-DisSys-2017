@@ -17,8 +17,8 @@
       <file leaf-file-name="config.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/raft/config.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="347">
-              <caret line="381" column="21" lean-forward="false" selection-start-line="381" selection-start-column="21" selection-end-line="381" selection-end-column="21" />
+            <state relative-caret-position="404">
+              <caret line="396" column="36" lean-forward="false" selection-start-line="396" selection-start-column="36" selection-end-line="396" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -37,11 +37,10 @@
       <file leaf-file-name="raft.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="468" column="0" lean-forward="true" selection-start-line="468" selection-start-column="0" selection-end-line="468" selection-end-column="0" />
+            <state relative-caret-position="1466">
+              <caret line="391" column="2" lean-forward="false" selection-start-line="391" selection-start-column="2" selection-end-line="391" selection-end-column="2" />
               <folding>
                 <element signature="e#591#691#0" expanded="true" />
-                <element signature="n#!!block;n#Make#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -445,9 +444,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestBasicAgree_in_test_test_go - 2017.12.14 at 11h 20m 53s.xml">
-      <configuration name="TestBasicAgree in test_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
     <history-entry file="TestInitialElection_in_test_test_go - 2017.12.14 at 13h 24m 28s.xml">
       <configuration name="TestInitialElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
@@ -473,6 +469,9 @@
       <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
     <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 14h 08m 40s.xml">
+      <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReElection_in_test_test_go - 2017.12.14 at 16h 01m 19s.xml">
       <configuration name="TestReElection in test_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
   </component>
@@ -530,7 +529,8 @@
     <MESSAGE value="complete rpc args. add persist before rpc.fix  bug of converting to follower without term check in appendEntries rpc" />
     <MESSAGE value="add  log check and check already vote in handling request vote" />
     <MESSAGE value="add log operations in response to appendEntries" />
-    <option name="LAST_COMMIT_MESSAGE" value="add log operations in response to appendEntries" />
+    <MESSAGE value="fix bugs of not sending heartbeat upon election" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix bugs of not sending heartbeat upon election" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -681,7 +681,6 @@
           <caret line="288" column="15" lean-forward="true" selection-start-line="288" selection-start-column="15" selection-end-line="288" selection-end-column="15" />
           <folding>
             <element signature="e#591#691#0" expanded="true" />
-            <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -763,7 +762,6 @@
           <caret line="197" column="0" lean-forward="true" selection-start-line="197" selection-start-column="0" selection-end-line="197" selection-end-column="0" />
           <folding>
             <element signature="e#591#691#0" expanded="true" />
-            <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -811,7 +809,6 @@
           <caret line="15" column="22" lean-forward="false" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
           <folding>
             <element signature="e#591#691#0" expanded="true" />
-            <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -845,7 +842,6 @@
           <caret line="14" column="33" lean-forward="false" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
           <folding>
             <element signature="e#591#691#0" expanded="true" />
-            <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -951,14 +947,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/raft/config.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
-          <caret line="381" column="21" lean-forward="false" selection-start-line="381" selection-start-column="21" selection-end-line="381" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/raft/test_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6004">
@@ -1003,13 +991,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/raft/config.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="404">
+          <caret line="396" column="36" lean-forward="false" selection-start-line="396" selection-start-column="36" selection-end-line="396" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/raft/raft.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="468" column="0" lean-forward="true" selection-start-line="468" selection-start-column="0" selection-end-line="468" selection-end-column="0" />
+        <state relative-caret-position="1466">
+          <caret line="391" column="2" lean-forward="false" selection-start-line="391" selection-start-column="2" selection-end-line="391" selection-end-column="2" />
           <folding>
             <element signature="e#591#691#0" expanded="true" />
-            <element signature="n#!!block;n#Make#0" expanded="false" />
           </folding>
         </state>
       </provider>
