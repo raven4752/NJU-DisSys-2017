@@ -572,15 +572,16 @@ func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
 				}
 
 				index2send = start
-				for i := start; i >= 0; i-- { //skip all log with the same conflict term
-					if rf.log[i].Term != conflictTerm {
+				for i := start; i >= 1; i-- { //skip all log with the same conflict term
+					if rf.log[i-1].Term != conflictTerm {
 						index2send = i
 						break
 					}
 				}
+				index2send = 1
 				entries := rf.log[index2send:]
 				if index2send == 0 {
-					index2send = 1
+					panic("noth to send")
 				}
 				args := AppendEntriesArgs{rf.currentTerm, rf.me, index2send - 1, rf.log[index2send-1].Term, entries, rf.commitIndex}
 				go func(args AppendEntriesArgs) {
