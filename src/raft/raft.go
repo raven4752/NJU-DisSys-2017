@@ -44,8 +44,8 @@ type Log struct {
 	Command interface{}
 }
 
-var verbose bool = false
-var info bool = true
+var Verbose bool = false
+var Info bool = true
 
 //
 // A Go object implementing a single Raft Peer.
@@ -129,8 +129,7 @@ func (rf *Raft) persist() {
 //
 func (rf *Raft) readPersist(data []byte) {
 	// Your code here.
-	rf.mu.Lock()
-	defer rf.mu.Unlock()
+
 	r := bytes.NewBuffer(data)
 	d := gob.NewDecoder(r)
 	d.Decode(&rf.currentTerm)
@@ -254,7 +253,7 @@ func (rf *Raft) sendAppendEntries(server int, args AppendEntriesArgs, reply *App
 	return ok
 }
 func (rt *Raft) print(msg string) {
-	if info {
+	if Info {
 		var state string
 		switch rt.identification {
 		case FOLLOWER:
@@ -271,7 +270,7 @@ func (rt *Raft) print(msg string) {
 	}
 }
 func (rt *Raft) verbose(msg string) {
-	if verbose {
+	if Verbose {
 		var state string
 		switch rt.identification {
 		case FOLLOWER:
@@ -382,16 +381,16 @@ func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 
 	if rf.identification == CANDIDATE {
 		msg := fmt.Sprintf("handling Reply. current follower :%d", rf.currentFollower)
-		rf.print(msg) //only react to voteReply when i am a candidate
+		rf.verbose(msg) //only react to voteReply when i am a candidate
 		if t.Term == rf.currentTerm {
 			rf.votesReceived += 1
 			//check vote result
 			if t.VoteGranted {
-				rf.print("+1 supporter")
+				rf.verbose("+1 supporter")
 				rf.currentFollower += 1
 			}
 		} else {
-			rf.print("outofDate vote Reply received")
+			rf.verbose("outofDate vote Reply received")
 
 		}
 		if rf.currentFollower > len(rf.peers)/2 {
@@ -408,7 +407,7 @@ func (rf *Raft) HandleResponseVote(t RequestVoteReply) {
 			rf.heartBeat()
 			rf.print(fmt.Sprintf(" the central cluster has made a decision"))
 		} else {
-			rf.print(fmt.Sprintf("i am not too modest ,how can i be a leader as a server"))
+			rf.verbose(fmt.Sprintf("i am not too modest ,how can i be a leader as a server"))
 
 			if rf.votesReceived == len(rf.peers)-1 {
 				rf.print(fmt.Sprintf("i think i should apply for professor"))
@@ -471,7 +470,7 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 		rf.verbose("checking according to heartbeat")
 
 	} else {
-		rf.print("receiving appendentries call")
+		rf.verbose("receiving appendentries call")
 	}
 	reply := AppendEntriesReply{}
 	term := t.Request.Term
@@ -510,7 +509,8 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 		rf.print(fmt.Sprintf("request logs from %d", reply.ConflictEntryIndex))
 	default: //update logs
 
-		if len(entries) > 0 {
+		if len(entries) > 0 && rf.identification != LEADER { //a leader never overwrite it's log
+
 			for i := index + 1; i < len(rf.log); i++ {
 				if rf.log[i].Term != entries[i-index-1].Term {
 					//pop all log starting from i and break
@@ -521,7 +521,9 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 			for i := 0; i < len(entries); i++ {
 				//check if already have
 				if len(rf.log)-1 >= index+1+i {
+
 					rf.log[index+1+i] = entries[i]
+
 				} else {
 					rf.log = append(rf.log, entries[i])
 				}
@@ -553,8 +555,22 @@ func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
 		if !t.Reply.Success {
 
 			index2send := t.Reply.ConflictEntryIndex
+
 			if index2send > 0 { //fail due to log conflict
-				entries := rf.log[index2send:]
+				var entries []Log
+				if index2send >= len(rf.log) {
+					//i do not have that much log ,skip all log with the same conflict term
+					index2send = 0
+					conflictTerm := t.Reply.ConflictEntryTerm
+					for i := len(rf.log) - 1; i >= 0; i-- {
+						if rf.log[i].Term != conflictTerm {
+							index2send = i
+							break
+						}
+					}
+				}
+				entries = rf.log[index2send:]
+
 				args := AppendEntriesArgs{rf.currentTerm, rf.me, index2send - 1, rf.log[index2send-1].Term, entries, rf.commitIndex}
 				go func(args AppendEntriesArgs) {
 					reply := &AppendEntriesReply{}
@@ -600,11 +616,11 @@ func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
 func (rf *Raft) Start(command interface{}) (int, int, bool) {
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
-	rf.persist()
+	defer rf.persist()
 	index := len(rf.log)
 	term := rf.currentTerm
 	isLeader := rf.identification == LEADER
-	rf.print("receive client call")
+	rf.verbose("receive client call")
 
 	if !isLeader {
 		return index, term, isLeader
@@ -626,7 +642,7 @@ func (rf *Raft) checkLog() {
 		for i := rf.commitIndex + 1; i < len(rf.log); i++ {
 			numagree := 0
 			if rf.log[i].Term != rf.currentTerm {
-				rf.print(fmt.Sprintf("rejected commit index to be %d due to Term %d", i, rf.log[i].Term))
+				rf.verbose(fmt.Sprintf("rejected commit index to be %d due to Term %d", i, rf.log[i].Term))
 				continue
 			}
 			for j := 0; j < len(rf.peers); j++ {
@@ -643,9 +659,10 @@ func (rf *Raft) checkLog() {
 	}
 	for rf.commitIndex > rf.lassApplied {
 		rf.lassApplied += 1
+
 		rf.ApplyMsgChan <- ApplyMsg{rf.lassApplied, rf.log[rf.lassApplied].Command, false, []byte{}}
 
-		rf.print(fmt.Sprintf("apply command  %d", rf.log[rf.lassApplied].Command))
+		rf.print(fmt.Sprintf("apply command  %d at index %d", rf.log[rf.lassApplied].Command, rf.log[rf.lassApplied].Term))
 
 	}
 }
@@ -673,17 +690,19 @@ func (rf *Raft) mainloop() {
 		case t := <-rf.applyEntriesArgsChan: //receive apply Entries rpc
 
 			rf.mu.Lock()
-			rf.persist() //persist before respond to rpc
 
 			rf.checkLog()
 			rf.HandleApplyEntries(t)
+			rf.persist() //persist before respond to rpc
+
 			rf.mu.Unlock()
 		case t := <-rf.RequestVoteArgsChan: //
 			rf.mu.Lock()
-			rf.persist() //persist before respond to rpc
 
 			rf.checkLog()
 			rf.HandleRequestVote(t)
+			rf.persist() //persist before respond to rpc
+
 			rf.mu.Unlock()
 			//check his log if ia m leader
 
@@ -718,6 +737,8 @@ func (rf *Raft) mainloop() {
 func Make(peers []*labrpc.ClientEnd, me int,
 	persister *Persister, applyCh chan ApplyMsg) *Raft {
 	rf := &Raft{}
+	rf.mu.Lock()
+	defer rf.mu.Unlock()
 	rf.peers = peers
 	rf.persister = persister
 	rf.me = me
