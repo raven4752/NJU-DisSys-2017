@@ -483,9 +483,11 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 	if rf.identification == FOLLOWER && !converted { //cancel election plan
 		rf.resetElectTimeOut()
 	}
+
 	switch {
 	case term < rf.currentTerm: //if term is old,return false
 		reply.Success = false
+
 		reply.Term = rf.currentTerm
 		rf.print("rejected due to low Term")
 
@@ -506,6 +508,9 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 		//		break
 		//	}
 		//}
+		if index == 0 {
+			panic("")
+		}
 		rf.print(fmt.Sprintf("log term not match for index %d,term %d,my term %d .request logs from %d", index, logterm, rf.log[index].Term, reply.ConflictEntryIndex))
 	default: //update logs
 
@@ -556,12 +561,12 @@ func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
 		if !t.Reply.Success {
 
 			index2send := t.Reply.ConflictEntryIndex
-			//decrease nextindex
-			if index2send < rf.nextIndex[t.Peer] {
-				rf.nextIndex[t.Peer] = index2send
-			}
 
 			if index2send > 0 { //fail due to log conflict
+				// decrease nextindex
+				if index2send < rf.nextIndex[t.Peer] {
+					rf.nextIndex[t.Peer] = index2send
+				}
 				conflictTerm := t.Reply.ConflictEntryTerm
 				var start int
 
@@ -573,16 +578,14 @@ func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
 
 				index2send = start
 				for i := start; i >= 1; i-- { //skip all log with the same conflict term
-					if rf.log[i-1].Term != conflictTerm {
+					if rf.log[i-1].Term <= 2*conflictTerm && rf.log[i-1].Term >= conflictTerm/2 {
 						index2send = i
 						break
 					}
 				}
-				index2send = 1
+				//index2send = 1
 				entries := rf.log[index2send:]
-				if index2send == 0 {
-					panic("noth to send")
-				}
+
 				args := AppendEntriesArgs{rf.currentTerm, rf.me, index2send - 1, rf.log[index2send-1].Term, entries, rf.commitIndex}
 				go func(args AppendEntriesArgs) {
 					reply := &AppendEntriesReply{}
