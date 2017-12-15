@@ -637,13 +637,14 @@ func TestPersist3(t *testing.T) {
 //
 func TestFigure8(t *testing.T) {
 	servers := 5
+	//Info = false
+
 	cfg := make_config(t, servers, false)
 	defer cfg.cleanup()
 
 	fmt.Printf("Test: Figure 8 ...\n")
 
 	cfg.one(rand.Int(), 1)
-
 	nup := servers
 	for iters := 0; iters < 1000; iters++ {
 		leader := -1
@@ -678,13 +679,13 @@ func TestFigure8(t *testing.T) {
 			}
 		}
 	}
-
 	for i := 0; i < servers; i++ {
 		if cfg.rafts[i] == nil {
 			cfg.start1(i)
 			cfg.connect(i)
 		}
 	}
+	Info = true
 
 	cfg.one(rand.Int(), servers)
 
@@ -722,6 +723,7 @@ func TestUnreliableAgree(t *testing.T) {
 
 func TestFigure8Unreliable(t *testing.T) {
 	servers := 5
+	Info = false
 	cfg := make_config(t, servers, true)
 	defer cfg.cleanup()
 
@@ -769,7 +771,7 @@ func TestFigure8Unreliable(t *testing.T) {
 			cfg.connect(i)
 		}
 	}
-
+	Info = true
 	cfg.one(rand.Int()%10000, servers)
 
 	fmt.Printf("  ... Passed\n")

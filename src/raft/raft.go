@@ -51,7 +51,7 @@ var Info bool = true
 // A Go object implementing a single Raft Peer.
 //
 const NOCANDIDATE int = -1
-const VOTETIMEOUTBASIC int = 150
+const VOTETIMEOUTBASIC int = 300
 const HEARTBEATTIMEOUT int = 50
 const (
 	FOLLOWER  = 0
@@ -422,7 +422,7 @@ func (rf *Raft) initIndex() {
 	//init nextindex and match index
 	rf.nextIndex = make([]int, len(rf.peers))
 	rf.matchIndex = make([]int, len(rf.peers))
-	for i := 1; i < len(rf.peers); i++ {
+	for i := 0; i < len(rf.peers); i++ {
 		rf.nextIndex[i] = len(rf.log)
 	}
 }
@@ -475,7 +475,7 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 	reply := AppendEntriesReply{}
 	term := t.Request.Term
 	index := t.Request.PrevLogIndex
-	Logterm := t.Request.PrevLogTerm
+	logterm := t.Request.PrevLogTerm
 	entries := t.Request.Entries
 	leaderCommit := t.Request.LeaderCommit
 	reply.Success = true
@@ -493,26 +493,26 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 		reply.Success = false
 		//requesting for logs starting from the end
 		reply.ConflictEntryIndex = len(rf.log)
-		reply.ConflictEntryTerm = Logterm //how to set the term???
-		rf.print(fmt.Sprintf("request logs from %d", reply.ConflictEntryIndex))
+		reply.ConflictEntryTerm = -1 //how to set the term???
+		rf.print(fmt.Sprintf("index %d too big.request  logs from %d", index, reply.ConflictEntryIndex))
 
-	case rf.log[index].Term != Logterm: //log not matches
+	case rf.log[index].Term != logterm: //log not matches
 		reply.Success = false
 		reply.ConflictEntryIndex = index
 		reply.ConflictEntryTerm = rf.log[index].Term
-		for i := len(rf.log); i >= 0; i-- {
-			if rf.log[i-1].Term != rf.log[index].Term {
-				reply.ConflictEntryIndex = i
-				break
-			}
-		}
-		rf.print(fmt.Sprintf("request logs from %d", reply.ConflictEntryIndex))
+		//for i := index; i >= 0; i-- {
+		//	if rf.log[i-1].Term != rf.log[index].Term {
+		//		reply.ConflictEntryIndex = i
+		//		break
+		//	}
+		//}
+		rf.print(fmt.Sprintf("log term not match for index %d,term %d,my term %d .request logs from %d", index, logterm, rf.log[index].Term, reply.ConflictEntryIndex))
 	default: //update logs
 
 		if len(entries) > 0 && rf.identification != LEADER { //a leader never overwrite it's log
 
 			for i := index + 1; i < len(rf.log); i++ {
-				if rf.log[i].Term != entries[i-index-1].Term {
+				if rf.log[i-1].Term != entries[i-index-1].Term {
 					//pop all log starting from i and break
 					rf.log = rf.log[0:i]
 					break
@@ -532,7 +532,7 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 			//update commit index
 			rf.print(fmt.Sprintf("log appended current index: %d", len(rf.log)-1))
 		}
-
+		//modify the origin raft to deal with leader log added after send appendEntries ,before the follower reply the RPC
 		if leaderCommit > rf.commitIndex {
 			if leaderCommit > len(rf.log)-1 {
 				rf.commitIndex = len(rf.log) - 1
@@ -542,6 +542,7 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 			rf.print(fmt.Sprintf("update commit index to %d", rf.commitIndex))
 
 		}
+		reply.ConflictEntryIndex = len(rf.log) - 1
 
 	}
 	reply.Term = rf.currentTerm
@@ -555,22 +556,32 @@ func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
 		if !t.Reply.Success {
 
 			index2send := t.Reply.ConflictEntryIndex
+			//decrease nextindex
+			if index2send < rf.nextIndex[t.Peer] {
+				rf.nextIndex[t.Peer] = index2send
+			}
 
 			if index2send > 0 { //fail due to log conflict
-				var entries []Log
-				if index2send >= len(rf.log) {
-					//i do not have that much log ,skip all log with the same conflict term
-					index2send = 0
-					conflictTerm := t.Reply.ConflictEntryTerm
-					for i := len(rf.log) - 1; i >= 0; i-- {
-						if rf.log[i].Term != conflictTerm {
-							index2send = i
-							break
-						}
+				conflictTerm := t.Reply.ConflictEntryTerm
+				var start int
+
+				if len(rf.log)-1 < rf.nextIndex[t.Peer] {
+					start = len(rf.log) - 1
+				} else {
+					start = rf.nextIndex[t.Peer]
+				}
+
+				index2send = start
+				for i := start; i >= 0; i-- { //skip all log with the same conflict term
+					if rf.log[i].Term != conflictTerm {
+						index2send = i
+						break
 					}
 				}
-				entries = rf.log[index2send:]
-
+				entries := rf.log[index2send:]
+				if index2send == 0 {
+					index2send = 1
+				}
 				args := AppendEntriesArgs{rf.currentTerm, rf.me, index2send - 1, rf.log[index2send-1].Term, entries, rf.commitIndex}
 				go func(args AppendEntriesArgs) {
 					reply := &AppendEntriesReply{}
@@ -591,9 +602,10 @@ func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
 				rf.print(fmt.Sprintf("updating Peer %d 's match index to %d", t.Peer, len(rf.log)-1))
 
 			}
+
 			//update next index for Peer
-			rf.nextIndex[t.Peer] = len(rf.log)
-			rf.matchIndex[t.Peer] = len(rf.log) - 1 //?
+			rf.nextIndex[t.Peer] = t.Reply.ConflictEntryIndex + 1 //len(rf.log)
+			rf.matchIndex[t.Peer] = t.Reply.ConflictEntryIndex    //?
 			//update match index for Peer
 		}
 	}
@@ -662,7 +674,7 @@ func (rf *Raft) checkLog() {
 
 		rf.ApplyMsgChan <- ApplyMsg{rf.lassApplied, rf.log[rf.lassApplied].Command, false, []byte{}}
 
-		rf.print(fmt.Sprintf("apply command  %d at index %d", rf.log[rf.lassApplied].Command, rf.log[rf.lassApplied].Term))
+		rf.print(fmt.Sprintf("apply command  %d at  %d term %d", rf.log[rf.lassApplied].Command, rf.lassApplied, rf.log[rf.lassApplied].Term))
 
 	}
 }
@@ -763,6 +775,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	//rf.CancelCampaignChan = make(chan int)
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
+	rf.print("i am alive")
 	go rf.mainloop()
 
 	return rf
