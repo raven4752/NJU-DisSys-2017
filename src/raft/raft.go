@@ -114,8 +114,6 @@ func (rf *Raft) GetState() (int, bool) {
 //
 func (rf *Raft) persist() {
 	// Your code here.
-	rf.mu.Lock()
-	defer rf.mu.Unlock()
 
 	w := new(bytes.Buffer)
 	e := gob.NewEncoder(w)
@@ -230,43 +228,6 @@ func (rf *Raft) RequestVote(args RequestVoteArgs, reply *RequestVoteReply) {
 	*reply = <-replyChan
 }
 
-func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
-	args := argsTuple.Request
-	reply := RequestVoteReply{}
-	term, candidateId, logindex, logterm := args.Term, args.CandidateId, args.LastLogIndex, args.LastLogTerm
-	msg := fmt.Sprintf("receiving vote Request from %d", candidateId)
-	rf.print(msg)
-	reply.VoteGranted = false
-	converted := rf.checkTerm(term)
-
-	if rf.identification == FOLLOWER { //only Reply vote when at FOLLOWER state
-		if rf.votedFor == candidateId {
-			reply.VoteGranted = true
-		} else if logindex >= len(rf.log)-1 && logterm >= rf.log[len(rf.log)-1].Term {
-
-			if converted {
-				//change my vote when staled
-				rf.votedFor = candidateId
-				msg := fmt.Sprintf("vote for %d", candidateId)
-				rf.print(msg)
-				reply.VoteGranted = true
-			} else if term == rf.currentTerm && rf.votedFor == NOCANDIDATE {
-				//change vote when no candidate voted for and a newer candidate request votes
-				rf.votedFor = candidateId
-				reply.VoteGranted = true
-				msg := fmt.Sprintf("vote for %d", candidateId)
-				rf.print(msg)
-			}
-		}
-
-	} else {
-		rf.print(fmt.Sprintf("i am not follower,ignore request"))
-	}
-	reply.Term = rf.currentTerm
-
-	argsTuple.ReplyChan <- reply
-}
-
 //
 // example code to send a RequestVote RPC to a server.
 // server is the index of the target server in rf.peers[].
@@ -326,6 +287,58 @@ func (rt *Raft) verbose(msg string) {
 		fmt.Printf("server %d T %d state %s : %s at %d \n", rt.me, rt.currentTerm, state, msg, timeElapsed.Nanoseconds()/(int64)(time.Millisecond))
 	}
 }
+func (rf *Raft) isMyLogOld(term int, lastLogIndex int) bool {
+	myLogTerm := rf.log[len(rf.log)-1].Term
+	switch {
+	case myLogTerm < term:
+		return true
+	case myLogTerm > term:
+		return false
+	case lastLogIndex >= len(rf.log)-1:
+		return true
+	default:
+		return false
+
+	}
+}
+func (rf *Raft) HandleRequestVote(argsTuple RequestVoteTuple) {
+	args := argsTuple.Request
+	reply := RequestVoteReply{}
+	term, candidateId, logindex, logterm := args.Term, args.CandidateId, args.LastLogIndex, args.LastLogTerm
+	msg := fmt.Sprintf("receiving vote Request from %d", candidateId)
+	rf.print(msg)
+	reply.VoteGranted = false
+	converted := rf.checkTerm(term)
+
+	if rf.identification == FOLLOWER { //only Reply vote when at FOLLOWER state
+		if rf.votedFor == candidateId {
+			reply.VoteGranted = true
+		} else if rf.isMyLogOld(logterm, logindex) {
+
+			if converted {
+				//change vote when  a newer candidate request votes
+
+				rf.votedFor = candidateId
+				msg := fmt.Sprintf("vote for %d", candidateId)
+				rf.print(msg)
+				reply.VoteGranted = true
+			} else if term == rf.currentTerm && rf.votedFor == NOCANDIDATE {
+				//change my vote when staled
+
+				rf.votedFor = candidateId
+				reply.VoteGranted = true
+				msg := fmt.Sprintf("vote for %d", candidateId)
+				rf.print(msg)
+			}
+		}
+
+	} else {
+		rf.print(fmt.Sprintf("i am not follower,ignore request"))
+	}
+	reply.Term = rf.currentTerm
+	rf.print(fmt.Sprintf("my reply: %d", reply.VoteGranted))
+	argsTuple.ReplyChan <- reply
+}
 
 func (rf *Raft) startCampaign() {
 	//increase current Term
@@ -336,21 +349,21 @@ func (rf *Raft) startCampaign() {
 	rf.votesReceived = 0
 	rf.currentFollower = 1
 	rf.resetElectTimeOut()
-	args := RequestVoteArgs{rf.currentTerm, rf.me, len(rf.log), rf.log[len(rf.log)-1].Term}
+	args := RequestVoteArgs{rf.currentTerm, rf.me, len(rf.log) - 1, rf.log[len(rf.log)-1].Term}
 	rf.print("converted to candidate")
 	for i := 0; i < len(rf.peers); i++ {
 		if i != rf.me {
 			go func(index int, replyChan chan RequestVoteReply) {
-				rf.print(fmt.Sprintf("sending Request to %d", index))
+				rf.verbose(fmt.Sprintf("sending Request to %d", index))
 				//Reply := <-rf.RequestVoteReplyChan
 				reply := RequestVoteReply{}
 				ok := rf.sendRequestVote(index, args, &reply)
 				if ok {
-					rf.print(fmt.Sprintf("rpc call Success %d", index))
+					rf.verbose(fmt.Sprintf("rpc call Success %d", index))
 				} else {
 					//set Reply to Term to notify network fail
 					reply.Term = rf.currentTerm
-					rf.print(fmt.Sprintf("rpc call failed %d", index))
+					rf.verbose(fmt.Sprintf("rpc call failed %d", index))
 				}
 				if reply.VoteGranted {
 					rf.print(fmt.Sprintf("receive support %d", index))
@@ -440,7 +453,7 @@ func (rf *Raft) heartBeat() {
 
 			ok := rf.sendAppendEntries(index, args, reply)
 			if !ok {
-				rf.print("heartbeat failed.")
+				rf.verbose("heartbeat failed.")
 			} else {
 				replyPeer := AppendEntriesReplyTuple{*reply, index}
 
@@ -587,6 +600,7 @@ func (rf *Raft) HandleResponseApplyEntries(t AppendEntriesReplyTuple) {
 func (rf *Raft) Start(command interface{}) (int, int, bool) {
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
+	rf.persist()
 	index := len(rf.log)
 	term := rf.currentTerm
 	isLeader := rf.identification == LEADER
@@ -615,7 +629,7 @@ func (rf *Raft) checkLog() {
 				rf.print(fmt.Sprintf("rejected commit index to be %d due to Term %d", i, rf.log[i].Term))
 				continue
 			}
-			for j := 1; j < len(rf.peers); j++ {
+			for j := 0; j < len(rf.peers); j++ {
 				if rf.matchIndex[j] >= i {
 					numagree += 1
 				}
@@ -627,11 +641,11 @@ func (rf *Raft) checkLog() {
 			}
 		}
 	}
-	if rf.commitIndex > rf.lassApplied {
+	for rf.commitIndex > rf.lassApplied {
 		rf.lassApplied += 1
 		rf.ApplyMsgChan <- ApplyMsg{rf.lassApplied, rf.log[rf.lassApplied].Command, false, []byte{}}
 
-		rf.print("apply msg")
+		rf.print(fmt.Sprintf("apply command  %d", rf.log[rf.lassApplied].Command))
 
 	}
 }
@@ -657,15 +671,17 @@ func (rf *Raft) mainloop() {
 			rf.HandleResponseApplyEntries(t)
 			rf.mu.Unlock()
 		case t := <-rf.applyEntriesArgsChan: //receive apply Entries rpc
-			rf.persist() //persist before respond to rpc
 
 			rf.mu.Lock()
+			rf.persist() //persist before respond to rpc
+
 			rf.checkLog()
 			rf.HandleApplyEntries(t)
 			rf.mu.Unlock()
 		case t := <-rf.RequestVoteArgsChan: //
-			rf.persist() //persist before respond to rpc
 			rf.mu.Lock()
+			rf.persist() //persist before respond to rpc
+
 			rf.checkLog()
 			rf.HandleRequestVote(t)
 			rf.mu.Unlock()

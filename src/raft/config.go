@@ -17,7 +17,10 @@ import crand "crypto/rand"
 import "encoding/base64"
 import "sync/atomic"
 import "time"
-import "fmt"
+import (
+	"fmt"
+	"runtime/debug"
+)
 
 func randstring(n int) string {
 	b := make([]byte, 2*n)
@@ -200,7 +203,7 @@ func (cfg *config) cleanup() {
 // attach server i to the net.
 func (cfg *config) connect(i int) {
 	// fmt.Printf("connect(%d)\n", i)
-
+	fmt.Printf("connect server %d\n", i)
 	cfg.connected[i] = true
 
 	// outgoing ClientEnds
@@ -223,6 +226,7 @@ func (cfg *config) connect(i int) {
 // detach server i from the net.
 func (cfg *config) disconnect(i int) {
 	// fmt.Printf("disconnect(%d)\n", i)
+	fmt.Printf("disconnect server %d\n", i)
 
 	cfg.connected[i] = false
 
@@ -421,6 +425,7 @@ func (cfg *config) one(cmd int, expectedServers int) int {
 			time.Sleep(50 * time.Millisecond)
 		}
 	}
+	debug.PrintStack()
 	cfg.t.Fatalf("one(%v) failed to reach agreement", cmd)
 	return -1
 }
