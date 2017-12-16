@@ -157,18 +157,18 @@ type RequestVoteReply struct {
 	VoteGranted bool
 }
 type AppendEntriesArgs struct {
-	Term         int
-	Leader       int
-	PrevLogIndex int
-	PrevLogTerm  int
-	Entries      []Log
-	LeaderCommit int
+	Term         int   //leader 's term
+	Leader       int   //leader 's no
+	PrevLogIndex int   // leader 's log index before the log to append
+	PrevLogTerm  int   //leader 's log term before  the log to append
+	Entries      []Log //log to append
+	LeaderCommit int   //leader's commited log index
 }
 type AppendEntriesReply struct {
-	Term               int
-	Success            bool
-	ConflictEntryTerm  int
-	ConflictEntryIndex int
+	Term               int  //server's term
+	Success            bool //is appendentries success
+	ConflictEntryTerm  int  //term of the inconsistent log
+	ConflictEntryIndex int  //index of the first log in ConflictEntryTerm
 }
 type AppendEntriesReplyTuple struct {
 	Reply AppendEntriesReply
@@ -502,12 +502,12 @@ func (rf *Raft) HandleApplyEntries(t AppendEntriesTuple) {
 		reply.Success = false
 		reply.ConflictEntryIndex = index
 		reply.ConflictEntryTerm = rf.log[index].Term
-		//for i := index; i >= 0; i-- {
-		//	if rf.log[i-1].Term != rf.log[index].Term {
-		//		reply.ConflictEntryIndex = i
-		//		break
-		//	}
-		//}
+		for i := index; i >= 0; i-- {
+			if rf.log[i-1].Term != rf.log[index].Term {
+				reply.ConflictEntryIndex = i
+				break
+			}
+		}
 		if index == 0 {
 			panic("")
 		}
